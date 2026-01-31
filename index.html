@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ivan Quinsaat | Engineering Portfolio</title>
 
-  <!-- Optional: antique-feel fonts (safe to remove if you want 100% offline) -->
+  <!-- Fonts (remove if you want fully offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 
   <style>
+    /* =========================================================
+       1) THEME TOKENS (colors, spacing, sizes)
+       ========================================================= */
     :root{
-      /* Steampunk palette */
       --bg:#120b06;
-      --paper:#1a110a;
-      --paper2:#140d07;
       --text:#f2e6d0;
       --muted:#c9b79b;
       --border: rgba(210, 176, 120, .25);
-      --accent:#c69a5b;   /* brass */
-      --accent2:#8b5e34;  /* copper */
       --link:#f2e6d0;
 
       --shadow: 0 18px 45px rgba(0,0,0,.55);
@@ -28,30 +26,50 @@
       --max: 980px;
     }
 
+    /* =========================================================
+       2) GLOBAL BASICS (page defaults)
+       ========================================================= */
     *{box-sizing:border-box}
 
     body{
       margin:0;
       color:var(--text);
       line-height:1.65;
+      font-family: "IM Fell English", ui-serif, Georgia, "Times New Roman", Times, serif;
+      overflow-x:hidden;
+
+      /* Background fallback (shows even if your image fails to load) */
       background:
         radial-gradient(1200px 800px at 20% 10%, rgba(198,154,91,.18), transparent 60%),
         radial-gradient(900px 600px at 90% 30%, rgba(139,94,52,.16), transparent 55%),
         linear-gradient(180deg, #0c0704 0%, var(--bg) 40%, #0b0603 100%);
-      font-family: "IM Fell English", ui-serif, Georgia, "Times New Roman", Times, serif;
-      overflow-x:hidden;
     }
 
-    /* Background image placeholder + dark overlay */
+    p{margin:0 0 12px}
+    .muted{color:var(--muted)}
+
+    a{
+      color:var(--link);
+      text-underline-offset: 4px;
+      text-decoration-color: rgba(198,154,91,.6);
+    }
+    a:hover{
+      color: #fff3dc;
+      text-decoration-color: rgba(198,154,91,.95);
+    }
+
+    /* =========================================================
+       3) FULL-PAGE BACKGROUND IMAGE + DARK OVERLAY
+       - Change ONLY the url(...) to swap images
+       ========================================================= */
     .bg{
       position:fixed;
       inset:0;
       z-index:-2;
 
-      /* PLACEHOLDER: put your image in url(...) */
       background-image:
         linear-gradient(rgba(10,6,3,.78), rgba(10,6,3,.86)),
-        url("assets/index-bg.jpg");
+        url("assets/index-bg.jpg"); /* <-- your image path */
 
       background-size:cover;
       background-position:center;
@@ -59,7 +77,9 @@
       transform: scale(1.02);
     }
 
-    /* Subtle texture layer (no external image needed) */
+    /* =========================================================
+       4) FILM GRAIN TEXTURE (subtle, optional)
+       ========================================================= */
     .grain{
       position:fixed;
       inset:-40px;
@@ -77,36 +97,34 @@
       mix-blend-mode: overlay;
     }
 
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding: 0 20px 80px;  
-    }
-
-    /* HERO: centered name only */
+    /* =========================================================
+       5) HERO (full-screen landing)
+       - Controls: centering, spacing between name + subtitle
+       ========================================================= */
     .hero{
-      height: 100vh;
+      height: 100vh;         /* full screen */
       width: 100%;
       display: grid;
-      place-items: center;
+      place-items: center;   /* perfect center */
       text-align: center;
+      padding: 0 20px;       /* safe padding on small screens */
     }
 
+    /* The “plaque” behind your name (toggle by editing this block) */
     .nameplate{
-      width:min(820px, 100%);
-      padding: 34px 26px 28px;
+      width:min(980px, 100%);
+      padding: 28px 24px 22px;
       border-radius: calc(var(--radius) + 6px);
       background:
         radial-gradient(900px 240px at 50% 0%, rgba(198,154,91,.14), transparent 70%),
-        linear-gradient(180deg, rgba(26,17,10,.72) 0%, rgba(20,13,7,.78) 100%);
+        linear-gradient(180deg, rgba(26,17,10,.62) 0%, rgba(20,13,7,.72) 100%);
       border:1px solid var(--border);
       box-shadow: var(--shadow);
       position:relative;
     }
 
-    /* Brass corner hints */
-    .nameplate:before,
-    .nameplate:after{
+    /* Decorative inner dashed border */
+    .nameplate:before{
       content:"";
       position:absolute;
       inset:10px;
@@ -115,36 +133,46 @@
       pointer-events:none;
     }
 
-    h1{
+    /* Name styling */
+    .hero h1{
       margin:0;
       font-family: "Cinzel", ui-serif, Georgia, serif;
       font-weight:700;
-      letter-spacing: .04em;
-      font-size: clamp(40px, 6vw, 72px);
-      text-transform: none;
+      letter-spacing: 0.08em;
+      font-size: clamp(48px, 8vw, 96px);
       text-shadow: 0 1px 0 rgba(0,0,0,.6);
     }
 
+    /* Subtitle styling (THIS CONTROLS DISTANCE UNDER NAME) */
     .subtitle{
-      margin: 10px 0 0;
-      font-family: "IM Fell English", ui-serif, Georgia, serif;
+      margin: 2px 0 0;        /* <-- closer to the name */
       font-size: clamp(16px, 2.2vw, 22px);
+      letter-spacing: 0.10em; /* tighter than 0.15em */
+      opacity: 0.85;
       color: var(--muted);
-      letter-spacing: .06em;
     }
 
+    /* Optional divider (enable by uncommenting the HTML line) */
     .divider{
       width: min(520px, 86%);
       height:1px;
-      margin: 18px auto 0;
+      margin: 14px auto 0;
       background: linear-gradient(90deg, transparent, rgba(198,154,91,.55), transparent);
     }
 
-    /* Content sections */
-    .section{
-      margin-top: 34px;
+    /* =========================================================
+       6) CONTENT WRAPPER (everything below the hero)
+       ========================================================= */
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: 0 20px 80px;
     }
 
+    /* Section spacing + headings */
+    .section{
+      margin-top: 34px; /* spacing between sections */
+    }
     .section h2{
       margin: 0 0 12px;
       font-family:"Cinzel", ui-serif, Georgia, serif;
@@ -153,19 +181,7 @@
       color: var(--text);
     }
 
-    p{margin:0 0 12px}
-    .muted{color:var(--muted)}
-
-    a{
-      color:var(--link);
-      text-underline-offset: 4px;
-      text-decoration-color: rgba(198,154,91,.6);
-    }
-    a:hover{
-      color: #fff3dc;
-      text-decoration-color: rgba(198,154,91,.95);
-    }
-
+    /* Cards grid */
     .grid{
       display:grid;
       grid-template-columns: repeat(12, 1fr);
@@ -208,46 +224,40 @@
       .card{grid-column: span 6;}
     }
 
-    /* Small footer spacing */
+    /* Footer spacing */
     .footer{
       margin-top: 36px;
       padding-top: 18px;
       border-top: 1px solid rgba(210,176,120,.18);
       color: var(--muted);
     }
-    
-    .hero h1{
-      font-size: clamp(48px, 8vw, 96px);
-      letter-spacing: 0.08em;
-      margin: 0;
-    }
-    
-    .subtitle{
-      margin-top: 12px;
-      font-size: clamp(16px, 2.2vw, 22px);
-      letter-spacing: 0.15em;
-      opacity: 0.85;
-    }
-
   </style>
 </head>
 
 <body>
-  <!-- Background placeholder -->
+  <!-- Background layers -->
   <div class="bg" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
 
-      <!-- HERO -->
+  <!-- =======================================================
+       HERO (full-screen intro)
+       - Edit name/subtitle text here
+       - If you want NO plaque, remove class="nameplate"
+       ======================================================= -->
   <section class="hero">
-    <div class="hero-inner">
+    <div class="nameplate">
       <h1>Ivan Quinsaat</h1>
+      <!-- <div class="divider"></div> --> <!-- optional line -->
       <p class="subtitle">Electronics and Mechanical Engineering</p>
     </div>
   </section>
-  
+
+  <!-- =======================================================
+       MAIN CONTENT (scroll down)
+       ======================================================= -->
   <div class="wrap">
-    <!-- CONTENT (keep your sections; tweak text anytime) -->
-    <div class="section">
+
+    <div class="section" id="about">
       <h2>About</h2>
       <p class="muted">
         I am an engineering student with a strong interest in control theory, embedded systems,
@@ -256,7 +266,7 @@
       </p>
     </div>
 
-    <div class="section">
+    <div class="section" id="projects">
       <h2>Featured projects</h2>
 
       <div class="grid">
@@ -292,7 +302,7 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="education">
       <h2>Education</h2>
       <p>
         Bachelor of Science in Electronics Engineering<br>
@@ -300,7 +310,7 @@
       </p>
     </div>
 
-    <div class="section footer">
+    <div class="section footer" id="links">
       <h2>Links</h2>
       <p>
         <a href="https://github.com/quinscake">GitHub</a> ·
@@ -308,6 +318,7 @@
         <a href="mailto:your@email.com">Email</a>
       </p>
     </div>
+
   </div>
 </body>
 </html>
