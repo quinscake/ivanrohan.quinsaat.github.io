@@ -135,29 +135,16 @@
     }
 
     /* =========================================================
-       6) CONTENT WRAPPER (UPDATED WITH GRADIENT)
+       6) CONTENT WRAPPER
        ========================================================= */
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      /* Reduced top padding slightly since the gradient adds visual space */
-      padding: 0 20px 80px; 
-      
-      /* NEW: This creates the gradual darkening effect */
-      background: linear-gradient(
-        to bottom, 
-        transparent 0%,           /* Start fully transparent at the top */
-        rgba(18, 11, 6, 0.6) 150px, /* Start getting dark around the 'About' section */
-        rgba(18, 11, 6, 0.95) 500px /* Become almost solid dark for the lists below */
-      );
-      
-      /* Optional: Round the top corners of the dark area slightly */
-      border-radius: 30px 30px 0 0;
+      padding: 0 20px 80px;
     }
 
     .section{
-      /* Increased top margin to push content deeper into the gradient */
-      margin-top: 60px; 
+      margin-top: 34px;
     }
     .section h2{
       margin: 0 0 12px;
@@ -212,11 +199,12 @@
        7) LIST ITEM STYLING (Education & Work)
        ========================================================= */
     .edu-item {
-      display: grid;
-      grid-template-columns: 140px 1fr; /* 140px fits "Jun 2025 – Sept 2025" */
-      gap: 16px;
-      margin-bottom: 28px;
-      align-items: baseline;
+          display: grid;
+          /* CHANGE: Increased from 85px to 140px to fit longer date ranges */
+          grid-template-columns: 140px 1fr; 
+          gap: 16px;
+          margin-bottom: 28px;
+          align-items: baseline;
     }
 
     .edu-date {
@@ -437,13 +425,6 @@
           <div class="edu-subheader">
             Spacecraft Mechanical and Autonomous Systems Development Division (SMASDD)
           </div>
-          <ul class="edu-list">
-            <li>Led design and testing of a 4-axis reaction wheel testbed, integrating mechanical design with computer hardware for future spacecraft attitude controls studies</li>
-            <li>Evaluated and selected hardware components including motor drivers, microcontrollers, and sensors through comparative analysis of specifications, cost-effectiveness, and system compatibility</li>
-            <li>Calibrated sensors for accurate closed-loop system feedback</li>
-            <li>Programmed control systems using C to interface with reaction wheel hardware</li>
-            <li>Created mechanical prototypes in SolidWorks and established theoretical framework documentation for future student use</li>
-          </ul>
         </div>
       </div>
 
@@ -456,11 +437,6 @@
           <div class="edu-subheader">
             EEE 137 Probability, Statistics and Random Processes in Electrical and Electronics Engineering
           </div>
-          <ul class="edu-list">
-            <li>Handled and supported undergraduate students on Engineering Statistics</li>
-            <li>Created automated feedback systems for multiple-choice assessments in the University online platform</li>
-            <li>Assisted in proctoring departmental examinations and maintained detailed attendance records</li>
-          </ul>
         </div>
       </div>
 
@@ -473,10 +449,6 @@
           <div class="edu-subheader">
             Wireless Communications Engineering Laboratory (WCEL)
           </div>
-          <ul class="edu-list">
-            <li>Contributing to ongoing wireless communications research projects</li>
-            <li>Supporting laboratory experiments and data collection initiatives</li>
-          </ul>
         </div>
       </div>
 
