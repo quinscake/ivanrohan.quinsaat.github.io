@@ -39,10 +39,8 @@
       -webkit-font-smoothing: antialiased; 
       -moz-osx-font-smoothing: grayscale;
 
-      background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(198,154,91,.18), transparent 60%),
-        radial-gradient(900px 600px at 90% 30%, rgba(139,94,52,.16), transparent 55%),
-        linear-gradient(180deg, #0c0704 0%, var(--bg) 40%, #0b0603 100%);
+      /* Fallback if image fails */
+      background: #0b0603;
     }
 
     p{margin:0 0 12px}
@@ -59,19 +57,32 @@
     }
 
     /* =========================================================
-       3) BACKGROUNDS
+       3) BACKGROUND & SCRIM (The Darkening Magic)
        ========================================================= */
+    
+    /* The static background image */
     .bg{
       position:fixed;
       inset:0;
-      z-index:-2;
+      z-index:-3; /* Furthest back */
       background-image:
-        linear-gradient(rgba(10,6,3,.78), rgba(10,6,3,.86)),
+        linear-gradient(rgba(10,6,3,.6), rgba(10,6,3,.7)), /* Lighter initial tint */
         url("assets/index-bg.jpg"); 
       background-size:cover;
       background-position:center;
       filter: saturate(0.95) contrast(1.05);
       transform: scale(1.02);
+    }
+
+    /* The "Scrim" - This gets darker as you scroll */
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: -2; /* On top of BG, behind text */
+      background-color: #0b0603; /* The dark theme color */
+      opacity: 0; /* Starts invisible */
+      pointer-events: none; /* Let clicks pass through */
+      transition: opacity 0.1s ease-out; /* Smooth transition */
     }
 
     .grain{
@@ -199,12 +210,11 @@
        7) LIST ITEM STYLING (Education & Work)
        ========================================================= */
     .edu-item {
-          display: grid;
-          /* CHANGE: Increased from 85px to 140px to fit longer date ranges */
-          grid-template-columns: 140px 1fr; 
-          gap: 16px;
-          margin-bottom: 28px;
-          align-items: baseline;
+      display: grid;
+      grid-template-columns: 140px 1fr; /* 140px fits "Jun 2025 – Sept 2025" */
+      gap: 16px;
+      margin-bottom: 28px;
+      align-items: baseline;
     }
 
     .edu-date {
@@ -299,6 +309,9 @@
 
 <body>
   <div class="bg" aria-hidden="true"></div>
+  
+  <div class="scrim" aria-hidden="true"></div>
+  
   <div class="grain" aria-hidden="true"></div>
 
   <section class="hero">
@@ -425,6 +438,13 @@
           <div class="edu-subheader">
             Spacecraft Mechanical and Autonomous Systems Development Division (SMASDD)
           </div>
+          <ul class="edu-list">
+            <li>Led design and testing of a 4-axis reaction wheel testbed, integrating mechanical design with computer hardware for future spacecraft attitude controls studies</li>
+            <li>Evaluated and selected hardware components including motor drivers, microcontrollers, and sensors through comparative analysis of specifications, cost-effectiveness, and system compatibility</li>
+            <li>Calibrated sensors for accurate closed-loop system feedback</li>
+            <li>Programmed control systems using C to interface with reaction wheel hardware</li>
+            <li>Created mechanical prototypes in SolidWorks and established theoretical framework documentation for future student use</li>
+          </ul>
         </div>
       </div>
 
@@ -437,6 +457,11 @@
           <div class="edu-subheader">
             EEE 137 Probability, Statistics and Random Processes in Electrical and Electronics Engineering
           </div>
+          <ul class="edu-list">
+            <li>Handled and supported undergraduate students on Engineering Statistics</li>
+            <li>Created automated feedback systems for multiple-choice assessments in the University online platform</li>
+            <li>Assisted in proctoring departmental examinations and maintained detailed attendance records</li>
+          </ul>
         </div>
       </div>
 
@@ -449,6 +474,10 @@
           <div class="edu-subheader">
             Wireless Communications Engineering Laboratory (WCEL)
           </div>
+          <ul class="edu-list">
+            <li>Contributing to ongoing wireless communications research projects</li>
+            <li>Supporting laboratory experiments and data collection initiatives</li>
+          </ul>
         </div>
       </div>
 
@@ -463,5 +492,26 @@
     </div>
 
   </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      // 1. Get how far we have scrolled
+      const scrolled = window.scrollY;
+      
+      // 2. Define the scroll distance where the darkness reaches maximum
+      // 500px is roughly when the user passes the Hero section.
+      const limit = 500; 
+      
+      // 3. Define how dark we want it to get (0.7 = 70% dark, image still visible)
+      const maxDarkness = 0.7; 
+
+      // 4. Calculate opacity ratio (0 to 1) based on scroll
+      let opacity = Math.min(scrolled / limit, 1) * maxDarkness;
+
+      // 5. Apply to the scrim layer
+      document.querySelector('.scrim').style.opacity = opacity;
+    });
+  </script>
+
 </body>
 </html>
