@@ -216,6 +216,36 @@
       border-top: 1px solid rgba(210,176,120,.18);
       color: var(--muted);
     }
+
+    .edu-item{
+      margin-bottom: 22px;
+    }
+    
+    .edu-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:12px;
+    }
+    
+    .edu-title{
+      font-weight:700;
+    }
+    
+    .edu-date{
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    
+    .edu-inst{
+      margin-top: 2px;
+    }
+    
+    .edu-meta{
+      margin-top: 4px;
+      font-size: 15px;
+    }
   </style>
 </head>
 
@@ -289,31 +319,50 @@
     <div class="section" id="education">
       <h2>Education</h2>
     
-      <p>
-        <strong>B.S. Electronics Engineering</strong><br>
-        University of the Philippines Diliman<br>
-        <span class="muted">Ongoing · Expected Graduation: June 2028</span><br>
-        <span class="muted">Lab Affiliation: Wireless Communications Engineering Laboratory (WCEL)</span>
-      </p>
+      <div class="edu-item">
+        <div class="edu-head">
+          <span class="edu-title">B.S. Electronics Engineering</span>
+          <span class="edu-date">Ongoing · 2028</span>
+        </div>
+        <div class="edu-inst">University of the Philippines Diliman</div>
+        <div class="edu-meta muted">
+          Lab Affiliation: Wireless Communications Engineering Laboratory (WCEL)
+        </div>
+      </div>
     
-      <p>
-        <strong>International Research Student</strong><br>
-        Institute of Science Tokyo (Science Tokyo)<br>
-        <span class="muted">Young Science and Engineering Researchers Program (YSEP)</span><br>
-        <span class="muted">Lab Affiliation: Sakamoto Laboratory – Space-structure Dynamics Design Laboratory (SDDL)</span>
-      </p>
+      <div class="edu-item">
+        <div class="edu-head">
+          <span class="edu-title">International Research Student</span>
+          <span class="edu-date">2026</span>
+        </div>
+        <div class="edu-inst">Institute of Science Tokyo (Science Tokyo)</div>
+        <div class="edu-meta muted">
+          Young Science and Engineering Researchers Program (YSEP)<br>
+          Sakamoto Laboratory – Space-Structure Dynamics Design Laboratory (SDDL)
+        </div>
+      </div>
     
-      <p>
-        <strong>Senior High School, STEM Track</strong><br>
-        University of Santo Tomas, Manila<br>
-        <span class="muted">Graduated: April 2023 · STEM Batch Valedictorian</span>
-      </p>
+      <div class="edu-item">
+        <div class="edu-head">
+          <span class="edu-title">Senior High School, STEM Track</span>
+          <span class="edu-date">2023</span>
+        </div>
+        <div class="edu-inst">University of Santo Tomas, Manila</div>
+        <div class="edu-meta muted">
+          Batch Valedictorian
+        </div>
+      </div>
     
-      <p>
-        <strong>Junior High School</strong><br>
-        Saint Louis College, La Union<br>
-        <span class="muted">Graduated: March 2021 · Batch Valedictorian</span>
-      </p>
+      <div class="edu-item">
+        <div class="edu-head">
+          <span class="edu-title">Junior High School</span>
+          <span class="edu-date">2021</span>
+        </div>
+        <div class="edu-inst">Saint Louis College, La Union</div>
+        <div class="edu-meta muted">
+          Batch Valedictorian
+        </div>
+      </div>
     </div>
 
     <div class="section footer" id="links">
