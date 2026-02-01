@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ivan Quinsaat | Engineering Portfolio</title>
 
-  <!-- Fonts (remove if you want fully offline) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 
   <style>
     /* =========================================================
-       1) THEME TOKENS (colors, spacing, sizes)
+       1) THEME TOKENS
        ========================================================= */
     :root{
       --bg:#120b06;
@@ -27,7 +26,7 @@
     }
 
     /* =========================================================
-       2) GLOBAL BASICS (page defaults)
+       2) GLOBAL BASICS
        ========================================================= */
     *{box-sizing:border-box}
 
@@ -38,7 +37,6 @@
       font-family: "IM Fell English", ui-serif, Georgia, "Times New Roman", Times, serif;
       overflow-x:hidden;
 
-      /* Background fallback (shows even if your image fails to load) */
       background:
         radial-gradient(1200px 800px at 20% 10%, rgba(198,154,91,.18), transparent 60%),
         radial-gradient(900px 600px at 90% 30%, rgba(139,94,52,.16), transparent 55%),
@@ -59,27 +57,21 @@
     }
 
     /* =========================================================
-       3) FULL-PAGE BACKGROUND IMAGE + DARK OVERLAY
-       - Change ONLY the url(...) to swap images
+       3) BACKGROUNDS
        ========================================================= */
     .bg{
       position:fixed;
       inset:0;
       z-index:-2;
-
       background-image:
         linear-gradient(rgba(10,6,3,.78), rgba(10,6,3,.86)),
-        url("assets/index-bg.jpg"); /* <-- your image path */
-
+        url("assets/index-bg.jpg"); 
       background-size:cover;
       background-position:center;
       filter: saturate(0.95) contrast(1.05);
       transform: scale(1.02);
     }
 
-    /* =========================================================
-       4) FILM GRAIN TEXTURE (subtle, optional)
-       ========================================================= */
     .grain{
       position:fixed;
       inset:-40px;
@@ -98,19 +90,17 @@
     }
 
     /* =========================================================
-       5) HERO (full-screen landing)
-       - Controls: centering, spacing between name + subtitle
+       5) HERO
        ========================================================= */
     .hero{
-      height: 100vh;         /* full screen */
+      height: 100vh;
       width: 100%;
       display: grid;
-      place-items: center;   /* perfect center */
+      place-items: center;
       text-align: center;
-      padding: 0 20px;       /* safe padding on small screens */
+      padding: 0 20px;
     }
 
-    /* The “plaque” behind your name (toggle by editing this block) */
     .nameplate{
       background: none;
       border: none;
@@ -118,7 +108,6 @@
       padding: 0;
     }
 
-    /* Name styling */
     .hero h1{
       margin:0;
       font-family: "Cinzel", ui-serif, Georgia, serif;
@@ -128,16 +117,14 @@
       text-shadow: 0 1px 0 rgba(0,0,0,.6);
     }
 
-    /* Subtitle styling (THIS CONTROLS DISTANCE UNDER NAME) */
     .subtitle{
-      margin: 0px 0 0;        /* <-- closer to the name */
+      margin: 0px 0 0;
       font-size: clamp(16px, 2.2vw, 22px);
-      letter-spacing: 0.10em; /* tighter than 0.15em */
+      letter-spacing: 0.10em;
       opacity: 0.85;
       color: var(--muted);
     }
 
-    /* Optional divider (enable by uncommenting the HTML line) */
     .divider{
       width: min(520px, 86%);
       height:1px;
@@ -146,7 +133,7 @@
     }
 
     /* =========================================================
-       6) CONTENT WRAPPER (everything below the hero)
+       6) CONTENT WRAPPER
        ========================================================= */
     .wrap{
       max-width:var(--max);
@@ -154,9 +141,8 @@
       padding: 0 20px 80px;
     }
 
-    /* Section spacing + headings */
     .section{
-      margin-top: 34px; /* spacing between sections */
+      margin-top: 34px;
     }
     .section h2{
       margin: 0 0 12px;
@@ -166,7 +152,6 @@
       color: var(--text);
     }
 
-    /* Cards grid */
     .grid{
       display:grid;
       grid-template-columns: repeat(12, 1fr);
@@ -185,7 +170,6 @@
       position:relative;
     }
 
-    /* Thin brass top edge */
     .card:before{
       content:"";
       position:absolute;
@@ -209,6 +193,98 @@
       .card{grid-column: span 6;}
     }
 
+    /* =========================================================
+       7) UPDATED EDUCATION SECTION (CV Layout)
+       ========================================================= */
+    .edu-item {
+      display: grid;
+      grid-template-columns: 85px 1fr; /* Left column fixed width */
+      gap: 16px;
+      margin-bottom: 28px;
+      align-items: baseline;
+    }
+
+    /* The Date Column */
+    .edu-date {
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #dcb888; /* Slightly brighter gold for emphasis */
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    /* The Content Block */
+    .edu-content {
+      border-left: 1px solid rgba(210,176,120,.15); /* Optional subtle divider line */
+      padding-left: 16px;
+    }
+
+    /* Row 1: Degree | School */
+    .edu-header {
+      font-size: 18px;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+    .edu-header strong {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Row 2: Sub-details (Graduated, Honors) */
+    .edu-subheader {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+    .edu-subheader strong {
+      color: #eaddcf; /* Slightly lighter text for honors */
+      font-style: normal;
+    }
+
+    /* Bullet lists */
+    .edu-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    .edu-list li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .edu-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--border);
+    }
+    .edu-list strong {
+      color: #eaddcf;
+    }
+
+    /* Mobile breakdown */
+    @media (max-width: 600px) {
+      .edu-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .edu-content {
+        border-left: none;
+        padding-left: 0;
+      }
+      .edu-date {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 2px;
+      }
+    }
+
     /* Footer spacing */
     .footer{
       margin-top: 36px;
@@ -217,59 +293,20 @@
       color: var(--muted);
     }
 
-    .edu-item{
-      margin-bottom: 22px;
-    }
-    
-    .edu-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      gap:12px;
-    }
-    
-    .edu-title{
-      font-weight:700;
-    }
-    
-    .edu-date{
-      font-size: 14px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    
-    .edu-inst{
-      margin-top: 2px;
-    }
-    
-    .edu-meta{
-      margin-top: 4px;
-      font-size: 15px;
-    }
   </style>
 </head>
 
 <body>
-  <!-- Background layers -->
   <div class="bg" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
 
-  <!-- =======================================================
-       HERO (full-screen intro)
-       - Edit name/subtitle text here
-       - If you want NO plaque, remove class="nameplate"
-       ======================================================= -->
   <section class="hero">
     <div class="nameplate">
       <h1>Ivan Quinsaat</h1>
-      <!-- <div class="divider"></div> --> <!-- optional line -->
       <p class="subtitle">Electronics & Mechanical Engineering</p>
     </div>
   </section>
 
-  <!-- =======================================================
-       MAIN CONTENT (scroll down)
-       ======================================================= -->
   <div class="wrap">
 
     <div class="section" id="about">
@@ -318,51 +355,62 @@
 
     <div class="section" id="education">
       <h2>Education</h2>
-    
+      
       <div class="edu-item">
-        <div class="edu-head">
-          <span class="edu-title">B.S. Electronics Engineering</span>
-          <span class="edu-date">Ongoing · 2028</span>
-        </div>
-        <div class="edu-inst">University of the Philippines Diliman</div>
-        <div class="edu-meta muted">
-          Lab Affiliation: Wireless Communications Engineering Laboratory (WCEL)
+        <div class="edu-date">Ongoing</div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <strong>B.S. Electronics Engineering</strong> | University of the Philippines, Diliman
+          </div>
+          <div class="edu-subheader">
+            Expected Graduation: June 2028
+          </div>
+          <ul class="edu-list">
+            <li><strong>Lab Affiliation:</strong> Wireless Communications Engineering Laboratory (WCEL)</li>
+          </ul>
         </div>
       </div>
-    
+      
       <div class="edu-item">
-        <div class="edu-head">
-          <span class="edu-title">International Research Student</span>
-          <span class="edu-date">2026</span>
-        </div>
-        <div class="edu-inst">Institute of Science Tokyo (Science Tokyo)</div>
-        <div class="edu-meta muted">
-          Young Science and Engineering Researchers Program (YSEP)<br>
-          Sakamoto Laboratory – Space-Structure Dynamics Design Laboratory (SDDL)
+        <div class="edu-date">2026</div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <strong>International Research Student</strong> | Institute of Science Tokyo (Science Tokyo)
+          </div>
+          <div class="edu-subheader">
+            Completed: September 2026 | <strong>Young Science and Engineering Researchers Program (YSEP)</strong>
+          </div>
+          <ul class="edu-list">
+            <li>Trained and conducted research under the direct guidance of Hiraku Sakamoto for 6 months from April 2026 to September 2026 as a selected international exchange student under the YSEP Program</li>
+            <li><strong>Lab Affiliation:</strong> Sakamoto Laboratory, Space-structure Dynamics Design Laboratory (SDDL)</li>
+          </ul>
         </div>
       </div>
-    
+      
       <div class="edu-item">
-        <div class="edu-head">
-          <span class="edu-title">Senior High School, STEM Track</span>
-          <span class="edu-date">2023</span>
-        </div>
-        <div class="edu-inst">University of Santo Tomas, Manila</div>
-        <div class="edu-meta muted">
-          Batch Valedictorian
+        <div class="edu-date">2023</div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <strong>Senior High School, STEM Track</strong> | University of Santo Tomas, Manila
+          </div>
+          <div class="edu-subheader">
+            Graduated: April 2023 | <strong>2023 STEM Batch Valedictorian</strong>
+          </div>
         </div>
       </div>
-    
+      
       <div class="edu-item">
-        <div class="edu-head">
-          <span class="edu-title">Junior High School</span>
-          <span class="edu-date">2021</span>
-        </div>
-        <div class="edu-inst">Saint Louis College, La Union</div>
-        <div class="edu-meta muted">
-          Batch Valedictorian
+        <div class="edu-date">2021</div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <strong>Junior High School</strong> | Saint Louis College, La Union
+          </div>
+          <div class="edu-subheader">
+            Graduated: March 2021 | <strong>2021 Batch Valedictorian</strong>
+          </div>
         </div>
       </div>
+
     </div>
 
     <div class="section footer" id="links">
