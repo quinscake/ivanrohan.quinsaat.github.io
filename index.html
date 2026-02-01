@@ -36,6 +36,8 @@
       line-height:1.65;
       font-family: "IM Fell English", ui-serif, Georgia, "Times New Roman", Times, serif;
       overflow-x:hidden;
+      -webkit-font-smoothing: antialiased; /* Makes text look crisper/thinner */
+      -moz-osx-font-smoothing: grayscale;
 
       background:
         radial-gradient(1200px 800px at 20% 10%, rgba(198,154,91,.18), transparent 60%),
@@ -194,11 +196,11 @@
     }
 
     /* =========================================================
-       7) UPDATED EDUCATION SECTION (CV Layout)
+       7) EDUCATION SECTION (Refined Weights)
        ========================================================= */
     .edu-item {
       display: grid;
-      grid-template-columns: 85px 1fr; /* Left column fixed width */
+      grid-template-columns: 85px 1fr;
       gap: 16px;
       margin-bottom: 28px;
       align-items: baseline;
@@ -218,15 +220,22 @@
       padding-left: 16px;
     }
 
+    /* Updates here: 
+      - Removed font-weight: 700 from strong.
+      - Set strong to 400 (normal) + White color.
+      - Set wrapper to normal color (var(--text)).
+    */
     .edu-header {
       font-size: 18px;
       line-height: 1.3;
       margin-bottom: 4px;
-      color: var(--text);
+      color: var(--text); /* "University" color */
+      font-weight: 400;   /* Ensure no accidental bold */
     }
+    
     .edu-header strong {
-      color: #fff;
-      font-weight: 600;
+      color: #fff;       /* "Degree" color (White) */
+      font-weight: 400;  /* "Degree" weight (Normal, not bold) */
     }
 
     .edu-subheader {
@@ -238,13 +247,14 @@
     .edu-subheader strong {
       color: #eaddcf;
       font-style: normal;
+      font-weight: 400; /* Also remove bold from subheader highlights */
     }
 
-    /* Bullet lists - INDENTED BY 24px */
+    /* Bullet lists - Indented */
     .edu-list {
       list-style: none;
       padding: 0;
-      margin: 4px 0 0 24px; /* <--- Pushes the bullets 24px to the right */
+      margin: 4px 0 0 24px;
       font-size: 15px;
       color: var(--muted);
     }
@@ -262,6 +272,7 @@
     }
     .edu-list strong {
       color: #eaddcf;
+      font-weight: 400;
     }
 
     @media (max-width: 600px) {
