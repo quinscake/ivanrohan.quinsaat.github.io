@@ -204,23 +204,20 @@
       align-items: baseline;
     }
 
-    /* The Date Column */
     .edu-date {
       font-family: "Cinzel", serif;
       font-weight: 700;
       font-size: 16px;
-      color: #dcb888; /* Slightly brighter gold for emphasis */
+      color: #dcb888;
       text-align: left;
       line-height: 1.4;
     }
 
-    /* The Content Block */
     .edu-content {
-      border-left: 1px solid rgba(210,176,120,.15); /* Optional subtle divider line */
+      border-left: 1px solid rgba(210,176,120,.15);
       padding-left: 16px;
     }
 
-    /* Row 1: Degree | School */
     .edu-header {
       font-size: 18px;
       line-height: 1.3;
@@ -229,10 +226,9 @@
     }
     .edu-header strong {
       color: #fff;
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    /* Row 2: Sub-details (Graduated, Honors) */
     .edu-subheader {
       font-size: 15px;
       color: var(--muted);
@@ -240,15 +236,15 @@
       font-style: italic;
     }
     .edu-subheader strong {
-      color: #eaddcf; /* Slightly lighter text for honors */
+      color: #eaddcf;
       font-style: normal;
     }
 
-    /* Bullet lists */
+    /* Bullet lists - INDENTED BY 24px */
     .edu-list {
       list-style: none;
       padding: 0;
-      margin: 0;
+      margin: 4px 0 0 24px; /* <--- Pushes the bullets 24px to the right */
       font-size: 15px;
       color: var(--muted);
     }
@@ -268,7 +264,6 @@
       color: #eaddcf;
     }
 
-    /* Mobile breakdown */
     @media (max-width: 600px) {
       .edu-item {
         grid-template-columns: 1fr;
@@ -285,7 +280,6 @@
       }
     }
 
-    /* Footer spacing */
     .footer{
       margin-top: 36px;
       padding-top: 18px;
@@ -366,7 +360,7 @@
             Expected Graduation: June 2028
           </div>
           <ul class="edu-list">
-            <li>Lab Affiliation: Wireless Communications Engineering Laboratory (WCEL)</li>
+            <li><strong>Lab Affiliation:</strong> Wireless Communications Engineering Laboratory (WCEL)</li>
           </ul>
         </div>
       </div>
@@ -378,10 +372,11 @@
             <strong>International Research Student</strong> | Institute of Science Tokyo (Science Tokyo)
           </div>
           <div class="edu-subheader">
-            Ongoing | <strong>Young Science and Engineering Researchers Program (YSEP)</strong>
+            Completed: September 2026 | <strong>Young Science and Engineering Researchers Program (YSEP)</strong>
           </div>
           <ul class="edu-list">
-            <li>Lab Affiliation: Sakamoto Laboratory, Space-structure Dynamics Design Laboratory (SDDL)</li>
+            <li>Trained and conducted research under the direct guidance of Hiraku Sakamoto for 6 months from April 2026 to September 2026 as a selected international exchange student under the YSEP Program</li>
+            <li><strong>Lab Affiliation:</strong> Sakamoto Laboratory, Space-structure Dynamics Design Laboratory (SDDL)</li>
           </ul>
         </div>
       </div>
