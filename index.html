@@ -42,7 +42,6 @@
       overflow-x:hidden;
       -webkit-font-smoothing: antialiased; 
       -moz-osx-font-smoothing: grayscale;
-
       background: #0b0603;
     }
 
@@ -130,7 +129,7 @@
     }
 
     /* =========================================================
-       TOP NAV (optional but nice)
+       TOP NAV
        ========================================================= */
     .nav{
       position:fixed;
@@ -169,10 +168,6 @@
       text-transform:uppercase;
       opacity:.9;
     }
-    .nav-role{
-      font-size:12px;
-      color:var(--muted);
-    }
     .nav-links{
       display:flex;
       gap:14px;
@@ -194,13 +189,13 @@
        5) HERO
        ========================================================= */
     .hero{
-      min-height: calc(100vh - 52px); /* 52px ~ nav height */
+      min-height: calc(100vh - 52px); /* viewport minus nav */
       width: 100%;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: center;          /* vertical center */
+      justify-content: center;      /* horizontal center */
       text-align: center;
-      padding: 60px 20px 0;
+      padding: 0 20px;
     }
 
     .nameplate{
@@ -209,7 +204,7 @@
       box-shadow: none;
       padding: 0;
       max-width:640px;
-      margin-top:24px;
+      margin:0;
     }
 
     .hero h1{
@@ -275,59 +270,6 @@
     .btn-outline{
       background:rgba(10,6,3,.45);
       color:var(--muted);
-    }
-
-    /* Orbit / satellite graphics */
-    .orbit-diagram{
-      position:relative;
-      margin-top:26px;
-      width:220px;
-      height:220px;
-      margin-left:auto;
-      margin-right:auto;
-      opacity:0.55;
-    }
-    .orbit{
-      position:absolute;
-      border-radius:50%;
-      border:1px dashed rgba(220,184,136,.45);
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-    }
-    .orbit-1{ width:90px; height:90px; }
-    .orbit-2{ width:140px; height:140px; }
-    .orbit-3{ width:190px; height:190px; }
-
-    .satellite{
-      position:absolute;
-      width:12px;
-      height:12px;
-      border-radius:3px;
-      background:#f2e6d0;
-      box-shadow:0 0 8px rgba(242,230,208,.9);
-      top:50%;
-      left:50%;
-      transform-origin:-60px -60px;
-      animation: satellite-orbit 18s linear infinite;
-    }
-
-    .panel{
-      position:absolute;
-      width:4px;
-      height:28px;
-      background:linear-gradient(180deg, rgba(242,230,208,.9), rgba(190,150,96,.6));
-      border-radius:6px;
-      top:50%;
-      left:50%;
-      transform-origin:0 20px;
-    }
-    .panel-1{ transform:rotate(-40deg) translate(80px,-40px); }
-    .panel-2{ transform:rotate(30deg) translate(-90px,-10px); }
-
-    @keyframes satellite-orbit{
-      from{ transform: rotate(0deg) translate(70px,-70px); }
-      to  { transform: rotate(360deg) translate(70px,-70px); }
     }
 
     /* =========================================================
@@ -559,7 +501,7 @@
   <header class="nav">
     <div class="nav-inner">
       <div class="nav-left">
-        <div class="nav-name">Ivan Quinsaat</div>
+        <div class="nav-name">IQ</div>
       </div>
       <nav class="nav-links">
         <a href="#about">About</a>
@@ -586,15 +528,6 @@
       <div class="hero-cta">
         <a href="#projects" class="btn">View my work</a>
         <a href="#links" class="btn btn-outline">Contact</a>
-      </div>
-
-      <div class="orbit-diagram">
-        <div class="orbit orbit-1"></div>
-        <div class="orbit orbit-2"></div>
-        <div class="orbit orbit-3"></div>
-        <div class="satellite"></div>
-        <div class="panel panel-1"></div>
-        <div class="panel panel-2"></div>
       </div>
     </div>
   </section>
@@ -733,175 +666,4 @@
           <div class="edu-subheader">
             Expected Completion: September 2026 | <strong>Young Science and Engineering Researchers Program (YSEP)</strong>
           </div>
-          <ul class="edu-list">
-            <li><strong>Lab Affiliation:</strong> Sakamoto Laboratory, Space-structure Dynamics Design Laboratory (SDDL)</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">2023</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Senior High School, STEM Track</strong> | University of Santo Tomas, Manila
-          </div>
-          <div class="edu-subheader">
-            Graduated: April 2023 | <strong>2023 STEM Batch Valedictorian</strong>
-          </div>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">2021</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Junior High School</strong> | Saint Louis College, La Union
-          </div>
-          <div class="edu-subheader">
-            Graduated: March 2021 | <strong>2021 Batch Valedictorian</strong>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="section reveal" id="work">
-      <h2>Work Experience</h2>
-      
-      <div class="edu-item">
-        <div class="edu-date">Feb 2026 – <br>Present</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Project Technical Aide VI</strong> | HALE-PH ALPHA
-          </div>
-          <div class="edu-subheader">
-            University of the Philippines Department of Mechanical Engineering
-          </div>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">Jun 2025 – <br>Sept 2025</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Mechanical and Autonomous Systems Engineering Associate</strong> | Philippine Space Agency (PhilSA)
-          </div>
-          <div class="edu-subheader">
-            Spacecraft Mechanical and Autonomous Systems Development Division (SMASDD)
-          </div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-date">Aug 2025 – <br>Dec 2025</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Student Assistant</strong> | UP Diliman Electrical and Electronics Engineering Institute
-          </div>
-          <div class="edu-subheader">
-            EEE 137 Probability, Statistics and Random Processes in Electrical and Electronics Engineering
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="section reveal" id="leadership">
-      <h2>Leadership & Affiliations</h2>
-
-      <div class="edu-item">
-        <div class="edu-date">Jan 2026 – <br>Present</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>UNISEC-Global Student Representative</strong>
-          </div>
-          <div class="edu-subheader">
-            University of the Philippines-Diliman Chapter
-          </div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-date">Aug 2025 - <br>Present</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Laboratory Affiliate</strong> | UP Diliman Electrical and Electronics Engineering Institute
-          </div>
-          <div class="edu-subheader">
-            Wireless Communications Engineering Laboratory (WCEL)
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="section footer reveal" id="links">
-      <h2>Links</h2>
-      <p>
-        <a href="https://www.linkedin.com/in/ivan-rohan-quinsaat-388595358/" target="_blank" rel="noreferrer">LinkedIn</a> ·
-        <a href="mailto:ivan.rohan.quinsaat@eee.upd.edu.ph">Email</a>
-      </p>
-    </div>
-
-  </div>
-
-  <script>
-    // Darkening scrim + starfield parallax
-    window.addEventListener('scroll', () => {
-      const scrolled = window.scrollY;
-
-      // scrim opacity
-      const limit = 500; 
-      const maxDarkness = 0.7; 
-      let opacity = Math.min(scrolled / limit, 1) * maxDarkness;
-      document.querySelector('.scrim').style.opacity = opacity;
-
-      // parallax translate for stars
-      const offsetSlow = scrolled * 0.03;
-      const offsetFast = scrolled * 0.06;
-
-      document.querySelectorAll('.star.slow')
-        .forEach(el => el.style.transform = `translateY(${offsetSlow}px)`);
-      document.querySelectorAll('.star.fast')
-        .forEach(el => el.style.transform = `translateY(${offsetFast}px)`);
-    });
-
-    // Generate stars
-    const starLayer = document.getElementById('starLayer');
-    const STAR_COUNT = 40;
-    for (let i=0; i<STAR_COUNT; i++){
-      const s = document.createElement('div');
-      s.className = 'star ' + (Math.random() > 0.5 ? 'slow' : 'fast');
-      s.style.left = (Math.random()*100) + 'vw';
-      s.style.top  = (Math.random()*100) + 'vh';
-      starLayer.appendChild(s);
-    }
-
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    reveals.forEach(el => observer.observe(el));
-
-    // Expandable "More details" sections
-    document.querySelectorAll('.more-toggle').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-target');
-        const target = document.getElementById(id);
-        if (!target) return;
-        const isOpen = target.style.display === 'block';
-        target.style.display = isOpen ? 'none' : 'block';
-        btn.textContent = isOpen ? 'More details' : 'Hide details';
-      });
-    });
-  </script>
-
-</body>
-</html>
+          <ul
