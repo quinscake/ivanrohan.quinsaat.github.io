@@ -10,26 +10,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 
   <style>
+    /* =========================================================
+       1) THEME TOKENS
+       ========================================================= */
     :root{
       --bg:#120b06;
       --text:#f2e6d0;
       --muted:#c9b79b;
       --border: rgba(210, 176, 120, .25);
       --link:#f2e6d0;
-      --accent:#dcb888;
+
       --shadow: 0 18px 45px rgba(0,0,0,.55);
       --radius: 20px;
       --max: 980px;
     }
 
-    body.light{
-      --bg:#f5efe5;
-      --text:#21130b;
-      --muted:#5c5247;
-      --border: rgba(90, 70, 40, .2);
-      --link:#3b2a13;
-    }
-
+    /* =========================================================
+       2) GLOBAL BASICS
+       ========================================================= */
     *{box-sizing:border-box}
 
     html{
@@ -44,7 +42,8 @@
       overflow-x:hidden;
       -webkit-font-smoothing: antialiased; 
       -moz-osx-font-smoothing: grayscale;
-      background:#0b0603;
+
+      background: #0b0603;
     }
 
     p{margin:0 0 12px}
@@ -60,11 +59,13 @@
       text-decoration-color: rgba(198,154,91,.95);
     }
 
-    /* Background layers */
+    /* =========================================================
+       3) BACKGROUND & SCRIM
+       ========================================================= */
     .bg{
       position:fixed;
       inset:0;
-      z-index:-3;
+      z-index:-4;
       background-image:
         linear-gradient(rgba(10,6,3,.6), rgba(10,6,3,.7)),
         url("assets/index-bg.jpg");
@@ -72,13 +73,6 @@
       background-position:center;
       filter: saturate(0.95) contrast(1.05);
       transform: scale(1.02);
-    }
-
-    body.light .bg{
-      background-image:
-        linear-gradient(rgba(245,239,229,.65), rgba(234,223,210,.75)),
-        url("assets/index-bg.jpg");
-      filter: saturate(1.05) contrast(0.98);
     }
 
     .scrim {
@@ -91,14 +85,10 @@
       transition: opacity 0.1s ease-out;
     }
 
-    body.light .scrim{
-      background-color:#f5efe5;
-    }
-
     .grain{
       position:fixed;
       inset:-40px;
-      z-index:-1;
+      z-index:-3;
       pointer-events:none;
       opacity:.14;
       background:
@@ -112,32 +102,51 @@
       mix-blend-mode: overlay;
     }
 
-    /* Top nav */
+    /* Starfield parallax layer */
+    .parallax-layer{
+      pointer-events:none;
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      overflow:hidden;
+    }
+
+    .star{
+      position:absolute;
+      width:3px;
+      height:3px;
+      border-radius:50%;
+      background:rgba(255,240,210,.9);
+      box-shadow:0 0 6px rgba(255,240,210,.9);
+      opacity:0.7;
+      animation: twinkle 3s ease-in-out infinite alternate;
+    }
+    .star.slow{ animation-duration:5s; opacity:0.4; }
+    .star.fast{ animation-duration:2s; }
+
+    @keyframes twinkle{
+      from{ transform:scale(0.6); opacity:0.4; }
+      to{ transform:scale(1.1); opacity:0.9; }
+    }
+
+    /* =========================================================
+       TOP NAV (optional but nice)
+       ========================================================= */
     .nav{
       position:fixed;
       top:0;
       left:0;
       right:0;
-      z-index:10;
+      z-index:20;
       backdrop-filter: blur(12px);
       background:linear-gradient(
         180deg,
-        rgba(8,4,2,.92),
-        rgba(8,4,2,.75),
+        rgba(8,4,2,.94),
+        rgba(8,4,2,.76),
         transparent
       );
       border-bottom:1px solid rgba(210,176,120,.18);
     }
-    body.light .nav{
-      background:linear-gradient(
-        180deg,
-        rgba(250,245,237,.95),
-        rgba(250,245,237,.8),
-        transparent
-      );
-      border-bottom:1px solid rgba(120,96,60,.22);
-    }
-
     .nav-inner{
       max-width:var(--max);
       margin:0 auto;
@@ -148,13 +157,11 @@
       gap:16px;
       font-size:14px;
     }
-
     .nav-left{
       display:flex;
       align-items:baseline;
       gap:8px;
     }
-
     .nav-name{
       font-family:"Cinzel", ui-serif, Georgia, serif;
       letter-spacing:.12em;
@@ -166,51 +173,42 @@
       font-size:12px;
       color:var(--muted);
     }
-
     .nav-links{
       display:flex;
       gap:14px;
       align-items:center;
       flex-wrap:wrap;
-    }
-    .nav-links a{
-      text-decoration:none;
       font-size:13px;
       letter-spacing:.08em;
       text-transform:uppercase;
+    }
+    .nav-links a{
+      text-decoration:none;
       color:var(--muted);
     }
     .nav-links a:hover{
       color:var(--text);
     }
 
-    .theme-toggle{
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:4px 10px;
-      background:rgba(12,7,4,.6);
-      color:var(--muted);
-      font-size:11px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      cursor:pointer;
-    }
-    body.light .theme-toggle{
-      background:rgba(245,239,229,.9);
-    }
-
-    /* Hero */
+    /* =========================================================
+       5) HERO
+       ========================================================= */
     .hero{
-      min-height: 100vh;
+      height: 100vh;
       width: 100%;
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 60px 20px 0;
     }
 
     .nameplate{
-      max-width: 620px;
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      max-width:640px;
+      margin-top:24px;
     }
 
     .hero h1{
@@ -218,12 +216,20 @@
       font-family: "Cinzel", ui-serif, Georgia, serif;
       font-weight:700;
       letter-spacing: 0.08em;
-      font-size: clamp(48px, 8vw, 96px);
+      font-size: clamp(56px, 6vw, 92px);
       text-shadow: 0 1px 0 rgba(0,0,0,.6);
+      white-space: nowrap; /* keep on one line */
+    }
+
+    @media (max-width: 480px){
+      .hero h1{
+        font-size:44px;
+        letter-spacing:0.06em;
+      }
     }
 
     .subtitle{
-      margin: 6px 0 0;
+      margin: 10px 0 0;
       font-size: clamp(16px, 2.2vw, 22px);
       letter-spacing: 0.10em;
       opacity: 0.85;
@@ -240,7 +246,7 @@
 
     .hero-blurb{
       max-width:520px;
-      margin:0 auto 18px;
+      margin:0 auto 22px;
       font-size:15px;
       color:var(--muted);
     }
@@ -269,11 +275,63 @@
       background:rgba(10,6,3,.45);
       color:var(--muted);
     }
-    body.light .btn-outline{
-      background:rgba(245,239,229,.85);
+
+    /* Orbit / satellite graphics */
+    .orbit-diagram{
+      position:relative;
+      margin-top:26px;
+      width:220px;
+      height:220px;
+      margin-left:auto;
+      margin-right:auto;
+      opacity:0.55;
+    }
+    .orbit{
+      position:absolute;
+      border-radius:50%;
+      border:1px dashed rgba(220,184,136,.45);
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+    }
+    .orbit-1{ width:90px; height:90px; }
+    .orbit-2{ width:140px; height:140px; }
+    .orbit-3{ width:190px; height:190px; }
+
+    .satellite{
+      position:absolute;
+      width:12px;
+      height:12px;
+      border-radius:3px;
+      background:#f2e6d0;
+      box-shadow:0 0 8px rgba(242,230,208,.9);
+      top:50%;
+      left:50%;
+      transform-origin:-60px -60px;
+      animation: satellite-orbit 18s linear infinite;
     }
 
-    /* Content wrapper */
+    .panel{
+      position:absolute;
+      width:4px;
+      height:28px;
+      background:linear-gradient(180deg, rgba(242,230,208,.9), rgba(190,150,96,.6));
+      border-radius:6px;
+      top:50%;
+      left:50%;
+      transform-origin:0 20px;
+    }
+    .panel-1{ transform:rotate(-40deg) translate(80px,-40px); }
+    .panel-2{ transform:rotate(30deg) translate(-90px,-10px); }
+
+    @keyframes satellite-orbit{
+      from{ transform: rotate(0deg) translate(70px,-70px); }
+      to  { transform: rotate(360deg) translate(70px,-70px); }
+    }
+
+    /* =========================================================
+       6) CONTENT WRAPPER
+       ========================================================= */
     .wrap{
       max-width:var(--max);
       margin:0 auto;
@@ -309,12 +367,13 @@
       box-shadow: 0 14px 40px rgba(0,0,0,.45);
       position:relative;
       overflow:hidden;
+      transition: transform .25s ease-out, box-shadow .25s ease-out, border-color .25s;
     }
-    body.light .card{
-      background:
-        radial-gradient(700px 220px at 20% 0%, rgba(210,176,120,.24), transparent 60%),
-        linear-gradient(180deg, rgba(247,239,229,.96), rgba(235,224,212,.98));
-      box-shadow:0 10px 28px rgba(120,96,60,.32);
+
+    .card:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.6);
+      border-color: rgba(220,184,136,.7);
     }
 
     .card:before{
@@ -329,7 +388,7 @@
     }
 
     .card h3{
-      margin: 10px 0 4px;
+      margin: 10px 0 8px;
       font-family:"Cinzel", ui-serif, Georgia, serif;
       font-weight:700;
       letter-spacing:.03em;
@@ -339,7 +398,7 @@
     .card-meta{
       font-size:13px;
       color:var(--muted);
-      margin-bottom:10px;
+      margin-bottom:8px;
     }
 
     .tag-row{
@@ -358,14 +417,11 @@
       color:var(--muted);
       background:rgba(12,7,4,.6);
     }
-    body.light .tag{
-      background:rgba(245,239,229,.9);
-    }
 
     .more-toggle{
       font-size:13px;
       cursor:pointer;
-      color:var(--accent);
+      color:#dcb888;
       text-decoration:underline;
       text-underline-offset:3px;
     }
@@ -381,7 +437,9 @@
       .card{grid-column: span 6;}
     }
 
-    /* Education / Work list */
+    /* =========================================================
+       7) LIST ITEM STYLING (Education & Work)
+       ========================================================= */
     .edu-item {
       display: grid;
       grid-template-columns: 140px 1fr;
@@ -415,9 +473,6 @@
     .edu-header strong {
       color: #fff;
       font-weight: 400;
-    }
-    body.light .edu-header strong{
-      color:#21130b;
     }
 
     .edu-subheader {
@@ -477,10 +532,9 @@
       padding-top: 18px;
       border-top: 1px solid rgba(210,176,120,.18);
       color: var(--muted);
-      font-size:14px;
     }
 
-    /* Simple scroll reveal */
+    /* Scroll reveal */
     .reveal{
       opacity:0;
       transform:translateY(22px);
@@ -490,6 +544,7 @@
       opacity:1;
       transform:translateY(0);
     }
+
   </style>
 </head>
 
@@ -497,8 +552,9 @@
   <div class="bg" aria-hidden="true"></div>
   <div class="scrim" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
+  <div class="parallax-layer" id="starLayer" aria-hidden="true"></div>
 
-  <!-- Top nav -->
+  <!-- Top navigation -->
   <header class="nav">
     <div class="nav-inner">
       <div class="nav-left">
@@ -512,12 +568,11 @@
         <a href="#work">Work</a>
         <a href="#leadership">Leadership</a>
         <a href="#links">Contact</a>
-        <button class="theme-toggle" type="button" id="themeToggle">Light</button>
       </nav>
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- HERO -->
   <section class="hero" id="top">
     <div class="nameplate reveal">
       <h1>Ivan Quinsaat</h1>
@@ -525,11 +580,21 @@
       <div class="divider"></div>
       <p class="hero-blurb">
         I design and build hardware for spacecraft attitude control, structural dynamics,
-        and deployable space systems — bridging theory with experimental testbeds and flight hardware.
+        and deployable space systems — bridging theory with experimental testbeds and flight
+        hardware.
       </p>
       <div class="hero-cta">
         <a href="#projects" class="btn">View my work</a>
         <a href="#links" class="btn btn-outline">Contact</a>
+      </div>
+
+      <div class="orbit-diagram">
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+        <div class="satellite"></div>
+        <div class="panel panel-1"></div>
+        <div class="panel panel-2"></div>
       </div>
     </div>
   </section>
@@ -551,10 +616,10 @@
     </div>
 
     <div class="section reveal" id="projects">
-      <h2>Featured Projects</h2>
+      <h2>Featured projects</h2>
 
       <div class="grid">
-        <article class="card">
+        <div class="card">
           <h3>Low-Cost IMU for Attitude Prototyping</h3>
           <p class="card-meta">
             Inertial sensing · Kalman filtering · Python 3D visualization
@@ -569,9 +634,7 @@
             to suppress bias drift and noise for small satellite attitude experiments. It supports
             wireless streaming to a Python-based 3D visualization tool for rapid control prototyping.
           </p>
-          <p class="muted">
-            Focus: control design, robustness, experimental validation
-          </p>
+          <p class="muted">Focus: control design, robustness, experimental validation</p>
           <p>
             <span class="more-toggle" data-target="imu-more">More details</span> ·
             <a href="#" target="_blank" rel="noreferrer">GitHub</a>
@@ -583,9 +646,9 @@
               testbeds and deployment on attitude-dependent payload demonstrations.
             </p>
           </div>
-        </article>
+        </div>
 
-        <article class="card">
+        <div class="card">
           <h3>Reaction Wheel Testbed (Concept)</h3>
           <p class="card-meta">
             Attitude dynamics · hardware-in-the-loop · control
@@ -600,9 +663,7 @@
             using low-cost hardware. Intended for testing estimation and control algorithms with
             realistic actuator limits and sensor noise.
           </p>
-          <p class="muted">
-            Focus: estimation, attitude control, experimental validation
-          </p>
+          <p class="muted">Focus: estimation, attitude control, experimental validation</p>
           <p>
             <span class="more-toggle" data-target="rw-more">More details</span>
           </p>
@@ -613,9 +674,9 @@
               support student projects on robust attitude control.
             </p>
           </div>
-        </article>
+        </div>
 
-        <article class="card">
+        <div class="card">
           <h3>Deployable Structures Study (SDDL)</h3>
           <p class="card-meta">
             Space structures · origami-inspired mechanisms · analysis
@@ -630,9 +691,7 @@
             mechanisms for space applications. Work includes literature review, concept development,
             and early-stage numerical modeling of candidate architectures.
           </p>
-          <p class="muted">
-            Focus: structural dynamics, design space exploration
-          </p>
+          <p class="muted">Focus: structural dynamics, design space exploration</p>
           <p>
             <span class="more-toggle" data-target="sddl-more">More details</span>
           </p>
@@ -643,7 +702,7 @@
               design approaches.
             </p>
           </div>
-        </article>
+        </div>
       </div>
     </div>
 
@@ -780,42 +839,45 @@
       <h2>Links</h2>
       <p>
         <a href="https://www.linkedin.com/in/ivan-rohan-quinsaat-388595358/" target="_blank" rel="noreferrer">LinkedIn</a> ·
-        <a href="mailto:ivan.rohan.quinsaat@eee.upd.edu.ph">Email</a> ·
-        <a href="https://github.com/YOUR_GITHUB_USERNAME" target="_blank" rel="noreferrer">GitHub</a>
-      </p>
-      <p class="muted">
-        Built with GitHub Pages. Last updated <span id="lastUpdated"></span>.
+        <a href="mailto:ivan.rohan.quinsaat@eee.upd.edu.ph">Email</a>
       </p>
     </div>
 
   </div>
 
   <script>
-    // Darken background on scroll
+    // Darkening scrim + starfield parallax
     window.addEventListener('scroll', () => {
       const scrolled = window.scrollY;
+
+      // scrim opacity
       const limit = 500; 
-      const maxDarkness = 0.7;
+      const maxDarkness = 0.7; 
       let opacity = Math.min(scrolled / limit, 1) * maxDarkness;
       document.querySelector('.scrim').style.opacity = opacity;
+
+      // parallax translate for stars
+      const offsetSlow = scrolled * 0.03;
+      const offsetFast = scrolled * 0.06;
+
+      document.querySelectorAll('.star.slow')
+        .forEach(el => el.style.transform = `translateY(${offsetSlow}px)`);
+      document.querySelectorAll('.star.fast')
+        .forEach(el => el.style.transform = `translateY(${offsetFast}px)`);
     });
 
-    // Light / dark toggle (remember preference)
-    const themeToggle = document.getElementById('themeToggle');
-    const storedTheme = localStorage.getItem('theme');
-
-    if (storedTheme === 'light') {
-      document.body.classList.add('light');
-      themeToggle.textContent = 'Dark';
+    // Generate stars
+    const starLayer = document.getElementById('starLayer');
+    const STAR_COUNT = 40;
+    for (let i=0; i<STAR_COUNT; i++){
+      const s = document.createElement('div');
+      s.className = 'star ' + (Math.random() > 0.5 ? 'slow' : 'fast');
+      s.style.left = (Math.random()*100) + 'vw';
+      s.style.top  = (Math.random()*100) + 'vh';
+      starLayer.appendChild(s);
     }
 
-    themeToggle.addEventListener('click', () => {
-      const isLight = document.body.classList.toggle('light');
-      themeToggle.textContent = isLight ? 'Dark' : 'Light';
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    });
-
-    // Simple scroll reveal using IntersectionObserver
+    // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -839,14 +901,6 @@
         btn.textContent = isOpen ? 'More details' : 'Hide details';
       });
     });
-
-    // Last updated (from build time)
-    const lastUpdatedEl = document.getElementById('lastUpdated');
-    if (lastUpdatedEl){
-      lastUpdatedEl.textContent = new Date().toLocaleDateString(undefined, {
-        year:'numeric', month:'short', day:'numeric'
-      });
-    }
   </script>
 
 </body>
