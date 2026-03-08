@@ -185,34 +185,34 @@
       color:var(--text);
     }
 
-    /* HERO – edit this to reposition landing text */
+    /* HERO – Ivan centered in viewport */
     .hero{
-      min-height: calc(100vh - 52px); /* viewport minus nav */
+      min-height: calc(100vh - 52px);   /* viewport minus nav height */
       width: 100%;
       display: flex;
-      align-items: center;      /* vertical position: change to flex-start and add padding-top if you want it higher */
-      justify-content: center;  /* horizontal centering */
+      align-items: center;              /* center vertically */
+      justify-content: center;          /* center horizontally */
       text-align: center;
       padding: 0 20px;
     }
-
+    
     .nameplate{
-      background: none;
-      border: none;
-      box-shadow: none;
+      max-width: 640px;
+      margin: 0;
       padding: 0;
-      max-width:640px;
-      margin:0;
+      position: relative;
     }
-
+    
+    /* Center "Ivan Quinsaat" itself in the hero box */
     .hero h1{
-      margin:-10;
+      margin: 0;
       font-family: "Cinzel", ui-serif, Georgia, serif;
-      font-weight:700;
+      font-weight: 700;
       letter-spacing: 0.08em;
       font-size: clamp(56px, 6vw, 92px);
       text-shadow: 0 1px 0 rgba(0,0,0,.6);
       white-space: nowrap;
+      line-height: 1;
     }
 
     @media (max-width: 480px){
