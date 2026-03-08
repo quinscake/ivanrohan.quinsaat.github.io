@@ -145,8 +145,8 @@
     }
     .nav-left{
       display:flex;
-      align-items:baseline;
-      gap:8px;
+      align-items:center;
+      gap:10px;
     }
     .nav-name{
       font-family:"Cinzel", ui-serif, Georgia, serif;
@@ -155,6 +155,19 @@
       text-transform:uppercase;
       opacity:.9;
     }
+
+    .nav-cv{
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(10,6,3,.7);
+      color:var(--muted);
+      text-decoration:none;
+    }
+
     .nav-links{
       display:flex;
       gap:14px;
@@ -172,15 +185,15 @@
       color:var(--text);
     }
 
-    /* HERO – THIS CONTROLS LANDING CENTERING */
+    /* HERO – edit this to reposition landing text */
     .hero{
-      min-height: calc(100vh - 52px); /* viewport minus nav height */
+      min-height: calc(100vh - 52px); /* viewport minus nav */
       width: 100%;
       display: flex;
-      align-items: center;   /* vertical centering */
-      justify-content: center; /* horizontal centering */
+      align-items: center;      /* vertical position: change to flex-start and add padding-top if you want it higher */
+      justify-content: center;  /* horizontal centering */
       text-align: center;
-      padding: 10 20px;       /* no extra top padding */
+      padding: 0 20px;
     }
 
     .nameplate{
@@ -479,6 +492,7 @@
     <div class="nav-inner">
       <div class="nav-left">
         <div class="nav-name">IQ</div>
+        <a href="assets/Ivan_Quinsaat_CV.pdf" class="nav-cv" download>Download CV</a>
       </div>
       <nav class="nav-links">
         <a href="#about">About</a>
@@ -503,9 +517,6 @@
       </p>
       <div class="hero-cta">
         <a href="#projects" class="btn">View my work</a>
-        <a href="assets/Ivan_Quinsaat_CV.pdf" class="btn btn-outline" download>
-          Download CV
-        </a>
         <a href="#links" class="btn btn-outline">Contact</a>
       </div>
     </div>
@@ -758,10 +769,8 @@
   </div>
 
   <script>
-    // Darkening scrim + starfield parallax
     window.addEventListener('scroll', () => {
       const scrolled = window.scrollY;
-
       const limit = 500; 
       const maxDarkness = 0.7; 
       let opacity = Math.min(scrolled / limit, 1) * maxDarkness;
