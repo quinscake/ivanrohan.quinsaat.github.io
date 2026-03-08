@@ -194,10 +194,11 @@
        5) HERO
        ========================================================= */
     .hero{
-      height: 100vh;
+      min-height: calc(100vh - 52px); /* 52px ~ nav height */
       width: 100%;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       padding: 60px 20px 0;
     }
