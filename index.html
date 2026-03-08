@@ -10,9 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 
   <style>
-    /* =========================================================
-       1) THEME TOKENS
-       ========================================================= */
     :root{
       --bg:#120b06;
       --text:#f2e6d0;
@@ -25,9 +22,6 @@
       --max: 980px;
     }
 
-    /* =========================================================
-       2) GLOBAL BASICS
-       ========================================================= */
     *{box-sizing:border-box}
 
     html{
@@ -58,9 +52,6 @@
       text-decoration-color: rgba(198,154,91,.95);
     }
 
-    /* =========================================================
-       3) BACKGROUND & SCRIM
-       ========================================================= */
     .bg{
       position:fixed;
       inset:0;
@@ -101,7 +92,6 @@
       mix-blend-mode: overlay;
     }
 
-    /* Starfield parallax layer */
     .parallax-layer{
       pointer-events:none;
       position:fixed;
@@ -128,9 +118,6 @@
       to{ transform:scale(1.1); opacity:0.9; }
     }
 
-    /* =========================================================
-       TOP NAV
-       ========================================================= */
     .nav{
       position:fixed;
       top:0;
@@ -185,17 +172,15 @@
       color:var(--text);
     }
 
-    /* =========================================================
-       5) HERO
-       ========================================================= */
+    /* HERO – THIS CONTROLS LANDING CENTERING */
     .hero{
-      min-height: calc(100vh - 52px); /* viewport minus nav */
+      min-height: calc(100vh - 52px); /* viewport minus nav height */
       width: 100%;
       display: flex;
-      align-items: center;          /* vertical center */
-      justify-content: center;      /* horizontal center */
+      align-items: center;   /* vertical centering */
+      justify-content: center; /* horizontal centering */
       text-align: center;
-      padding: 0 20px;
+      padding: 0 20px;       /* no extra top padding */
     }
 
     .nameplate{
@@ -214,7 +199,7 @@
       letter-spacing: 0.08em;
       font-size: clamp(56px, 6vw, 92px);
       text-shadow: 0 1px 0 rgba(0,0,0,.6);
-      white-space: nowrap; /* keep on one line */
+      white-space: nowrap;
     }
 
     @media (max-width: 480px){
@@ -272,9 +257,6 @@
       color:var(--muted);
     }
 
-    /* =========================================================
-       6) CONTENT WRAPPER
-       ========================================================= */
     .wrap{
       max-width:var(--max);
       margin:0 auto;
@@ -380,9 +362,6 @@
       .card{grid-column: span 6;}
     }
 
-    /* =========================================================
-       7) LIST ITEM STYLING (Education & Work)
-       ========================================================= */
     .edu-item {
       display: grid;
       grid-template-columns: 140px 1fr;
@@ -477,7 +456,6 @@
       color: var(--muted);
     }
 
-    /* Scroll reveal */
     .reveal{
       opacity:0;
       transform:translateY(22px);
@@ -497,7 +475,6 @@
   <div class="grain" aria-hidden="true"></div>
   <div class="parallax-layer" id="starLayer" aria-hidden="true"></div>
 
-  <!-- Top navigation -->
   <header class="nav">
     <div class="nav-inner">
       <div class="nav-left">
@@ -514,7 +491,6 @@
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="hero" id="top">
     <div class="nameplate reveal">
       <h1>Ivan Quinsaat</h1>
@@ -527,6 +503,9 @@
       </p>
       <div class="hero-cta">
         <a href="#projects" class="btn">View my work</a>
+        <a href="assets/Ivan_Quinsaat_CV.pdf" class="btn btn-outline" download>
+          Download CV
+        </a>
         <a href="#links" class="btn btn-outline">Contact</a>
       </div>
     </div>
@@ -783,13 +762,11 @@
     window.addEventListener('scroll', () => {
       const scrolled = window.scrollY;
 
-      // scrim opacity
       const limit = 500; 
       const maxDarkness = 0.7; 
       let opacity = Math.min(scrolled / limit, 1) * maxDarkness;
       document.querySelector('.scrim').style.opacity = opacity;
 
-      // parallax translate for stars
       const offsetSlow = scrolled * 0.03;
       const offsetFast = scrolled * 0.06;
 
@@ -799,7 +776,6 @@
         .forEach(el => el.style.transform = `translateY(${offsetFast}px)`);
     });
 
-    // Generate stars
     const starLayer = document.getElementById('starLayer');
     const STAR_COUNT = 40;
     for (let i=0; i<STAR_COUNT; i++){
@@ -810,7 +786,6 @@
       starLayer.appendChild(s);
     }
 
-    // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -823,7 +798,6 @@
 
     reveals.forEach(el => observer.observe(el));
 
-    // Expandable "More details" sections
     document.querySelectorAll('.more-toggle').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-target');
