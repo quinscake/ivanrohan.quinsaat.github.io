@@ -504,15 +504,15 @@
   <!-- HERO with title locked to center -->
   <section class="hero" id="top">
     <div class="nameplate">
-        <p class="hero-blurb">
-        </p>
       <h1 class="hero-title">Ivan Quinsaat</h1>
 
       <div class="hero-below reveal">
         <p class="subtitle">Electronics & Mechanical Engineering</p>
         <div class="divider"></div>
         <p class="hero-blurb">
-  .
+          I design and build hardware for spacecraft attitude control, structural dynamics,
+          and deployable space systems — bridging theory with experimental testbeds and flight
+          hardware.
         </p>
         <div class="hero-cta">
           <a href="#projects" class="btn">View my work</a>
@@ -527,18 +527,107 @@
     <div class="section reveal" id="about">
       <h2>About</h2>
       <p class="muted">
-        Electronics Engineering student at UP Diliman focusing in antennas and structural dynamics and 
+        Electronics Engineering student at UP Diliman specializing in structural dynamics and 
         control for satellite and rocket systems. I have hands-on spacecraft development experience 
         at the Philippine Space Agency, including reaction wheel testbeds for attitude control research. 
       </p>
       <p class="muted">
-        My interests center on antennas, deployable space structures, and hardware-in-the-loop experiments
+        My interests center on control theory, deployable space **structures**, and hardware-in-the-loop experiments
         for flight applications. I am currently an international research student at the Space-Structure Dynamics
         Design Laboratory (SDDL) exploring deployable mechanisms for space systems.
       </p>
     </div>
 
+    <div class="section reveal" id="projects">
+      <h2>Featured projects</h2>
 
+      <div class="grid">
+        <div class="card">
+          <h3>Low-Cost IMU for Attitude Prototyping</h3>
+          <p class="card-meta">
+            Inertial sensing · Kalman filtering · Python 3D visualization
+          </p>
+          <div class="tag-row">
+            <span class="tag">embedded</span>
+            <span class="tag">sensor fusion</span>
+            <span class="tag">control</span>
+          </div>
+          <p>
+            A low-cost IMU platform using locally available hardware with on-board Kalman filtering
+            to suppress bias drift and noise for small satellite attitude experiments. It supports
+            wireless streaming to a Python-based 3D visualization tool for rapid control prototyping.
+          </p>
+          <p class="muted">Focus: control design, robustness, experimental validation</p>
+          <p>
+            <span class="more-toggle" data-target="imu-more">More details</span> ·
+            <a href="#" target="_blank" rel="noreferrer">GitHub</a>
+          </p>
+          <div class="more-content" id="imu-more">
+            <p>
+              The system was characterized via static drift tests and stepper-motor-driven angle profiles
+              to quantify attitude accuracy over time. Future work includes integration with reaction wheel
+              testbeds and deployment on attitude-dependent payload demonstrations.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Reaction Wheel Testbed (Concept)</h3>
+          <p class="card-meta">
+            Attitude dynamics · hardware-in-the-loop · control
+          </p>
+          <div class="tag-row">
+            <span class="tag">spacecraft</span>
+            <span class="tag">reaction wheel</span>
+            <span class="tag">HIL</span>
+          </div>
+          <p>
+            Bench-top reaction wheel setup designed to emulate single-axis satellite attitude dynamics
+            using low-cost hardware. Intended for testing estimation and control algorithms with
+            realistic actuator limits and sensor noise.
+          </p>
+          <p class="muted">Focus: estimation, attitude control, experimental validation</p>
+          <p>
+            <span class="more-toggle" data-target="rw-more">More details</span>
+          </p>
+          <div class="more-content" id="rw-more">
+            <p>
+              The testbed concept includes modular electronics, the low-cost IMU, and a standardized
+              interface to switch between classic and advanced control laws. This project will eventually
+              support student projects on robust attitude control.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Deployable Structures Study (SDDL)</h3>
+          <p class="card-meta">
+            Space structures · origami-inspired mechanisms · analysis
+          </p>
+          <div class="tag-row">
+            <span class="tag">deployable</span>
+            <span class="tag">structures</span>
+            <span class="tag">space</span>
+          </div>
+          <p>
+            Ongoing research at the Space-Structure Dynamics Design Laboratory focusing on deployable
+            mechanisms for space applications. Work includes literature review, concept development,
+            and early-stage numerical modeling of candidate architectures.
+          </p>
+          <p class="muted">Focus: structural dynamics, design space exploration</p>
+          <p>
+            <span class="more-toggle" data-target="sddl-more">More details</span>
+          </p>
+          <div class="more-content" id="sddl-more">
+            <p>
+              The goal is to connect deployable structure kinematics with control and pointing
+              requirements of future space missions, paving the way for integrated structural-control
+              design approaches.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="section reveal" id="education">
       <h2>Education</h2>
