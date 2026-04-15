@@ -16,7 +16,6 @@
       --muted:#c9b79b;
       --border: rgba(210, 176, 120, .25);
       --link:#f2e6d0;
-
       --shadow: 0 18px 45px rgba(0,0,0,.55);
       --radius: 20px;
       --max: 980px;
@@ -185,9 +184,8 @@
       color:var(--text);
     }
 
-    /* HERO – "Ivan Quinsaat" locked to viewport center */
     .hero{
-      height: calc(100vh - 52px);  /* full viewport minus nav height */
+      height: calc(100vh - 52px);
       position: relative;
     }
 
@@ -201,7 +199,7 @@
       position:absolute;
       top:50%;
       left:50%;
-      transform:translate(-50%, -50%); /* exact center */
+      transform:translate(-50%, -50%);
       margin:0;
       font-family:"Cinzel", ui-serif, Georgia, serif;
       font-weight:700;
@@ -212,9 +210,8 @@
       line-height:1;
     }
 
-    /* Subtitle / blurb / buttons rendered below the center line */
     .hero-below{
-      padding-top: calc(50vh - 52px + 60px); /* just under name */
+      padding-top: calc(50vh - 52px + 60px);
       text-align:center;
     }
 
@@ -269,9 +266,8 @@
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      padding: 120px 20px 80px; /* was 0 20px 80px */
+      padding: 120px 20px 80px;
     }
-
 
     .section{
       margin-top: 34px;
@@ -497,7 +493,6 @@
     </div>
   </header>
 
-  <!-- HERO with title locked to center -->
   <section class="hero" id="top">
     <div class="nameplate">
       <h1 class="hero-title">Ivan Quinsaat</h1>
@@ -548,7 +543,7 @@
             wireless streaming to a Python-based 3D visualization tool for rapid control prototyping.
           </p>
         </div>
-                <div class="card">
+        <div class="card">
           <h3>Low-Cost IMU for Attitude Prototyping</h3>
           <p class="card-meta">
             Inertial sensing · Kalman filtering · Python 3D visualization
@@ -564,8 +559,6 @@
             wireless streaming to a Python-based 3D visualization tool for rapid control prototyping.
           </p>
         </div>
-
-        
       </div>
     </div>
 
