@@ -117,73 +117,6 @@
       to{ transform:scale(1.1); opacity:0.9; }
     }
 
-    .nav{
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      z-index:20;
-      backdrop-filter: blur(12px);
-      background:linear-gradient(
-        180deg,
-        rgba(8,4,2,.94),
-        rgba(8,4,2,.76),
-        transparent
-      );
-      border-bottom:1px solid rgba(210,176,120,.18);
-    }
-    .nav-inner{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:10px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      font-size:14px;
-    }
-    .nav-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .nav-name{
-      font-family:"Cinzel", ui-serif, Georgia, serif;
-      letter-spacing:.12em;
-      font-size:13px;
-      text-transform:uppercase;
-      opacity:.9;
-    }
-
-    .nav-cv{
-      font-size:11px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(10,6,3,.7);
-      color:var(--muted);
-      text-decoration:none;
-    }
-
-    .nav-links{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      flex-wrap:wrap;
-      font-size:13px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-    .nav-links a{
-      text-decoration:none;
-      color:var(--muted);
-    }
-    .nav-links a:hover{
-      color:var(--text);
-    }
-
     .hero{
       height: calc(100vh - 52px);
       position: relative;
@@ -480,18 +413,6 @@
   <div class="scrim" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
   <div class="parallax-layer" id="starLayer" aria-hidden="true"></div>
-
-  <header class="nav">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <a href="./assets/QUINSAAT_CV.pdf" class="nav-cv" target="_blank" rel="noopener noreferrer">
-  View CV
-</a>
-      </div>
-      <nav class="nav-links">
-      </nav>
-    </div>
-  </header>
 
   <section class="hero" id="top">
     <div class="nameplate">
