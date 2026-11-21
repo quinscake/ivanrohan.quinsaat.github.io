@@ -3,682 +3,1478 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ivan Quinsaat | Engineering Portfolio</title>
+  <title>Ivan Rohan Quinsaat | Nanosatellite ADCS and formation-flying GNC</title>
+  <meta name="description" content="Ivan Rohan Quinsaat builds and tests small-satellite hardware: attitude control, deployable antennas, and formation-flying GNC.">
+  <meta property="og:title" content="Ivan Rohan Quinsaat">
+  <meta property="og:description" content="Nanosatellite systems, formation-flying GNC, and spacecraft ADCS.">
+  <meta name="theme-color" content="#0B1026">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1026'/%3E%3Crect x='2.5' y='12' width='7.5' height='8' rx='.8' fill='%233A56B0'/%3E%3Crect x='22' y='12' width='7.5' height='8' rx='.8' fill='%233A56B0'/%3E%3Crect x='10.5' y='10' width='11' height='12' rx='1.2' fill='%23E3A43A'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%230B1026'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wghtLo@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 
   <style>
+    /* ---------- Tokens ---------- */
     :root{
-      --bg:#120b06;
-      --text:#f2e6d0;
-      --muted:#c9b79b;
-      --border: rgba(210, 176, 120, .25);
-      --link:#f2e6d0;
-      --shadow: 0 18px 45px rgba(0,0,0,.55);
-      --radius: 20px;
-      --max: 980px;
+      --space:#0B1026;      /* orbital night */
+      --space-2:#10183B;
+      --ink:#E7E9F0;
+      --ink-2:#C9CEDB;
+      --dim:#9AA3BA;
+      --kapton:#E3A43A;     /* MLI / polyimide foil */
+      --cell:#16214A;       /* solar cell blue */
+      --limb:#74C4FF;       /* atmosphere at the Earth's limb */
+      --alu:#BCC3CF;        /* anodized aluminum */
+      --line:rgba(188,195,207,.14);
+      --pad:clamp(20px, 5vw, 56px);
+      --cond:75%;
+      --wide:125%;
     }
 
     *{box-sizing:border-box}
-
-    html{
-      scroll-behavior:smooth;
-    }
-
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
     body{
       margin:0;
-      color:var(--text);
-      line-height:1.65;
-      font-family: "IM Fell English", ui-serif, Georgia, "Times New Roman", Times, serif;
-      overflow-x:hidden;
-      -webkit-font-smoothing: antialiased; 
-      -moz-osx-font-smoothing: grayscale;
-      background: #0b0603;
+      background:var(--space);
+      color:var(--ink);
+      font-family:"Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size:17px;
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit}
+    :focus-visible{outline:2px solid var(--kapton);outline-offset:3px;border-radius:3px}
+    .skip{position:absolute;left:-9999px;top:12px;z-index:100;background:var(--kapton);color:#1b1204;padding:8px 14px;border-radius:4px;text-decoration:none;font-weight:600}
+    .skip:focus{left:16px}
+
+    /* ---------- Header ---------- */
+    .top{
+      position:fixed;inset:0 0 auto 0;z-index:50;
+      display:flex;align-items:center;justify-content:space-between;gap:24px;
+      padding:16px var(--pad);
+      border-bottom:1px solid transparent;
+      transition:background-color .3s, border-color .3s;
+    }
+    .top.is-solid{background:rgba(11,16,38,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+    .top-name{font-stretch:var(--wide);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap;opacity:0;transition:opacity .3s}
+    .top.show-name .top-name{opacity:1}
+    .top-nav{display:flex;gap:clamp(14px, 2.4vw, 32px);font-size:15px}
+    .top-nav a{text-decoration:none;color:var(--dim);transition:color .2s}
+    .top-nav a:hover{color:var(--ink)}
+
+    /* ---------- Orbit hero ---------- */
+    .orbit{position:relative;height:100vh}
+    .orbit-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--space)}
+
+    /* Live map behind the content: land dots with today's day/night line and a moving ground track */
+    .map{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;opacity:0}
+    .stars{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+    .earth{
+      position:absolute;left:50%;top:calc(100% - 12vh);
+      width:300vw;aspect-ratio:1;border-radius:50%;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg, #17264F 0, #0E1735 5vh, var(--space) 11vh);
+      box-shadow:
+        0 -1.5px 0 rgba(116,196,255,.75),
+        0 -8px 26px rgba(116,196,255,.28),
+        0 -40px 120px rgba(116,196,255,.12);
     }
 
-    p{margin:0 0 12px}
-    .muted{color:var(--muted)}
-
-    a{
-      color:var(--link);
-      text-underline-offset: 4px;
-      text-decoration-color: rgba(198,154,91,.6);
+    .scene{position:absolute;inset:0;perspective:1100px;perspective-origin:var(--cx) var(--cy)}
+    .world{
+      position:absolute;left:var(--cx);top:var(--cy);width:0;height:0;
+      transform-style:preserve-3d;
+      transform:scale(var(--k)) rotateX(var(--tilt));
     }
-    a:hover{
-      color: #fff3dc;
-      text-decoration-color: rgba(198,154,91,.95);
-    }
+    .ring{position:absolute;left:0;top:0;transform-style:preserve-3d}
 
-    .bg{
-      position:fixed;
-      inset:0;
-      z-index:-4;
+    .tile{
+      position:absolute;
+      left:calc(var(--TW) / -2);top:calc(var(--TH) / -2);
+      width:var(--TW);height:var(--TH);
+      transform-style:preserve-3d;
+      transform:rotateY(calc(var(--i) * var(--step))) translateZ(var(--R));
+      color:var(--ink);text-decoration:none;cursor:pointer;
+    }
+    .tile:focus-visible{outline:none}
+    .tile-face{
+      position:absolute;inset:0;border-radius:6px;overflow:hidden;
+      -webkit-backface-visibility:hidden;backface-visibility:hidden;
+      filter:brightness(var(--lit, 1));
+      transition:opacity .7s ease calc(var(--i) * 80ms), border-color .3s;
+    }
+    .is-loading .tile-face{opacity:0}
+    .tile-front{
+      background:var(--space-2);
+      border:1px solid rgba(188,195,207,.22);
+      transform:skewX(var(--skew, 0deg));
+    }
+    .tile.is-front .tile-front{border-color:var(--kapton)}
+    .tile:focus-visible .tile-front{border:2px solid var(--kapton)}
+    .tile-back{
+      transform:rotateY(180deg) skewX(calc(var(--skew, 0deg) * -1));
+      background-color:#111a3d;
       background-image:
-        linear-gradient(rgba(10,6,3,.6), rgba(10,6,3,.7)),
-        url("assets/index-bg.jpg");
-      background-size:cover;
-      background-position:center;
-      filter: saturate(0.95) contrast(1.05);
-      transform: scale(1.02);
+        linear-gradient(rgba(188,195,207,.13) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(188,195,207,.13) 1px, transparent 1px);
+      background-size:calc(var(--TW) / 4) calc(var(--TH) / 2);
+      border:1px solid rgba(188,195,207,.18);
+      display:grid;place-items:center;
+      font-stretch:var(--wide);font-weight:800;font-size:44px;color:rgba(188,195,207,.28);
     }
-
-    .scrim {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background-color: #0b0603;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.1s ease-out;
+    .tile-photo{position:absolute;inset:0}
+    .tile-photo svg,.tile-photo img{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .tile-photo img{object-fit:cover}
+    .tile-label{
+      position:absolute;left:0;right:0;bottom:0;
+      display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+      padding:26px 12px 9px;
+      background:linear-gradient(rgba(9,13,32,0), rgba(9,13,32,.94) 70%);
+      font-size:14px;line-height:1.2;
     }
+    .tile-title{font-weight:600}
+    .tile-when{font-stretch:var(--cond);color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
 
-    .grain{
-      position:fixed;
-      inset:-40px;
-      z-index:-3;
-      pointer-events:none;
-      opacity:.14;
+    /* Satellite: 1U CubeSat with two deployable arrays and a tape-spring boom */
+    .sat,.deputy{position:absolute;left:0;top:0;transform-style:preserve-3d}
+    .sat > *, .deputy > *{position:absolute}
+    .panel{
+      position:absolute;
+      width:var(--S);height:var(--S);
+      left:calc(var(--S) / -2);top:calc(var(--S) / -2);
+      background:#7E8798;
+      box-shadow:inset 0 0 0 calc(var(--S) * .035) #AEB6C3;
+      border-radius:2px;
+      filter:brightness(var(--b, 1));
+    }
+    .panel::before,.panel::after{
+      content:"";position:absolute;top:9%;bottom:9%;width:39%;
       background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(255,255,255,.02) 0px,
-          rgba(255,255,255,.02) 1px,
-          transparent 2px,
-          transparent 5px
-        );
-      mix-blend-mode: overlay;
+        repeating-linear-gradient(0deg, rgba(200,215,255,.10) 0 1px, transparent 1px 7px),
+        linear-gradient(140deg, #24357A, #0F1A45 60%, #1A2862);
+      clip-path:polygon(12% 0,88% 0,100% 6%,100% 94%,88% 100%,12% 100%,0 94%,0 6%);
+    }
+    .panel::before{left:8%}
+    .panel::after{right:8%}
+    .foil{
+      background:
+        linear-gradient(115deg, #F6CF6E 0%, #C98A24 16%, #F0BD55 30%, #9C6214 47%, #E6AD45 63%, #B97A1D 80%, #F3C560 100%);
+      box-shadow:inset 0 0 0 calc(var(--S) * .035) #AEB6C3;
+    }
+    .foil::before{
+      left:50%;top:50%;bottom:auto;width:36%;height:36%;
+      transform:translate(-50%,-50%);
+      border-radius:50%;clip-path:none;
+      background:radial-gradient(circle at 36% 34%, #8DB8FF 0 7%, #14204A 26%, #03060F 64%);
+      box-shadow:0 0 0 calc(var(--S) * .04) #C9CED6, 0 0 0 calc(var(--S) * .06) #3A3F49;
+    }
+    .foil::after{display:none}
+    .f-pz{transform:translateZ(calc(var(--S) / 2))}
+    .f-nz{transform:rotateY(180deg) translateZ(calc(var(--S) / 2))}
+    .f-px{transform:rotateY(90deg) translateZ(calc(var(--S) / 2))}
+    .f-nx{transform:rotateY(-90deg) translateZ(calc(var(--S) / 2))}
+    .f-py{transform:rotateX(-90deg) translateZ(calc(var(--S) / 2))}
+    .f-ny{transform:rotateX(90deg) translateZ(calc(var(--S) / 2))}
+
+    .hinge{left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+    .h-px{transform:translate3d(calc(var(--S) / 2 + 2px), 0, calc(var(--S) / -2)) rotateY(var(--w-px, 0deg))}
+    .h-nx{transform:translate3d(calc(var(--S) / -2 - 2px), 0, calc(var(--S) / -2)) rotateY(var(--w-nx, 0deg))}
+    .hinge .panel{left:0}
+    .h-nx .panel{left:auto;right:0}
+
+    .boom{left:0;top:0;width:0;height:0;transform-style:preserve-3d;transform:translateY(calc(var(--S) / -2))}
+    .boom i{
+      position:absolute;left:-1.5px;bottom:0;width:3px;height:calc(var(--S) * 1.3);
+      background:linear-gradient(#F0F3F8, #8E97A6);
+      transform-origin:50% 100%;
+      transform:scaleY(var(--boom, 1));
+    }
+    .boom i:nth-child(2){transform:rotateY(90deg) scaleY(var(--boom, 1))}
+
+    .deputy .panel{width:var(--s);height:var(--s);left:calc(var(--s) / -2);top:calc(var(--s) / -2)}
+    .deputy .f-pz{transform:translateZ(calc(var(--s) / 2))}
+    .deputy .f-nz{transform:rotateY(180deg) translateZ(calc(var(--s) / 2))}
+    .deputy .f-px{transform:rotateY(90deg) translateZ(calc(var(--s) / 2))}
+    .deputy .f-nx{transform:rotateY(-90deg) translateZ(calc(var(--s) / 2))}
+    .deputy .f-py{transform:rotateX(-90deg) translateZ(calc(var(--s) / 2))}
+    .deputy .f-ny{transform:rotateX(90deg) translateZ(calc(var(--s) / 2))}
+
+    .rel-orbit{
+      position:absolute;border-radius:50%;
+      border:1px dashed rgba(116,196,255,.42);
     }
 
-    .parallax-layer{
-      pointer-events:none;
-      position:fixed;
-      inset:0;
-      z-index:-1;
-      overflow:hidden;
-    }
-
-    .star{
-      position:absolute;
-      width:3px;
-      height:3px;
-      border-radius:50%;
-      background:rgba(255,240,210,.9);
-      box-shadow:0 0 6px rgba(255,240,210,.9);
-      opacity:0.7;
-      animation: twinkle 3s ease-in-out infinite alternate;
-    }
-    .star.slow{ animation-duration:5s; opacity:0.4; }
-    .star.fast{ animation-duration:2s; }
-
-    @keyframes twinkle{
-      from{ transform:scale(0.6); opacity:0.4; }
-      to{ transform:scale(1.1); opacity:0.9; }
-    }
-
-    .hero{
-      height: calc(100vh - 52px);
-      position: relative;
-    }
-
-    .nameplate{
-      max-width:640px;
-      margin:0 auto;
-      position:relative;
-    }
-
-    .hero-title{
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%, -50%);
-      margin:0;
-      font-family:"Cinzel", ui-serif, Georgia, serif;
-      font-weight:700;
-      letter-spacing:0.08em;
-      font-size:clamp(56px, 6vw, 92px);
-      text-shadow:0 1px 0 rgba(0,0,0,.6);
-      white-space:nowrap;
-      line-height:1;
-    }
-
-    .hero-below{
-      padding-top: calc(50vh - 52px + 60px);
-      text-align:center;
-    }
-
-    .subtitle{
-      margin: 0;
-      font-size: clamp(16px, 2.2vw, 22px);
-      letter-spacing: 0.10em;
-      opacity: 0.85;
-      color: var(--muted);
-      text-transform:uppercase;
-    }
-
-    .divider{
-      width: min(520px, 86%);
-      height:1px;
-      margin: 16px auto 18px;
-      background: linear-gradient(90deg, transparent, rgba(198,154,91,.55), transparent);
-    }
-
-    .hero-blurb{
-      max-width:520px;
-      margin:0 auto 22px;
-      font-size:15px;
-      color:var(--muted);
-    }
-
-    .hero-cta{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:10px;
-    }
-
-    .btn{
-      border-radius:999px;
-      border:1px solid var(--border);
-      padding:8px 18px;
-      font-size:13px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      background:linear-gradient(135deg, rgba(198,154,91,.32), rgba(47,27,15,.9));
-      color:var(--text);
-      cursor:pointer;
-      text-decoration:none;
-      box-shadow:0 8px 24px rgba(0,0,0,.45);
-    }
-    .btn-outline{
-      background:rgba(10,6,3,.45);
-      color:var(--muted);
-    }
-
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding: 120px 20px 80px;
-    }
-
-    .section{
-      margin-top: 34px;
-    }
-    .section h2{
-      margin: 0 0 12px;
-      font-family:"Cinzel", ui-serif, Georgia, serif;
-      letter-spacing:.05em;
-      font-size: 22px;
-      color: var(--text);
-      text-transform:uppercase;
-    }
-
-    .grid{
+    /* Hero copy */
+    .copy{
+      position:absolute;left:var(--pad);top:50%;
+      transform:translateY(-50%);
+      width:min(36vw, 500px);
       display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:16px;
+    }
+    .intro,.caption{grid-area:1 / 1;align-self:center}
+    .intro h1{
+      font-stretch:var(--wide);font-weight:800;
+      font-size:clamp(40px, 4.6vw, 72px);
+      line-height:.98;letter-spacing:-.01em;
+      margin:0 0 26px;
+    }
+    .lede{font-size:clamp(17px, 1.3vw, 19.5px);line-height:1.55;margin:0 0 22px;color:var(--ink-2)}
+    .lede strong{color:var(--ink);font-weight:600}
+    .hint{margin:0;color:var(--dim);font-size:15px}
+    .hint a{color:var(--ink);text-decoration-color:var(--kapton);text-underline-offset:4px}
+
+    .caption{opacity:0}
+    .cap-meta{display:flex;flex-wrap:wrap;gap:4px 20px;margin:0 0 14px;font-stretch:var(--cond);font-size:15.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+    .cap-index{color:var(--kapton);font-weight:600}
+    .cap-title{
+      font-stretch:var(--wide);font-weight:750;
+      font-size:clamp(28px, 2.9vw, 44px);
+      line-height:1.04;letter-spacing:-.005em;
+      margin:0 0 14px;
+    }
+    .cap-org{margin:0 0 8px;font-weight:500}
+    .cap-line{margin:0 0 24px;color:var(--ink-2)}
+    .cap-actions{display:flex;align-items:center;gap:10px}
+    .cap-link{
+      margin-right:auto;
+      color:var(--ink);font-weight:600;
+      text-decoration:underline;text-decoration-color:var(--kapton);text-decoration-thickness:1.5px;text-underline-offset:5px;
+    }
+    .step{
+      width:42px;height:42px;border-radius:50%;
+      display:grid;place-items:center;
+      background:transparent;color:var(--ink);
+      border:1px solid rgba(188,195,207,.3);cursor:pointer;
+      transition:border-color .2s, background-color .2s;
+    }
+    .step:hover:not(:disabled){border-color:var(--kapton);background:rgba(227,164,58,.08)}
+    .step:disabled{opacity:.3;cursor:default}
+    .step svg{width:16px;height:16px}
+    .caption.flash{animation:flash .45s ease-out}
+    @keyframes flash{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* Live ADCS readout */
+    .hud{
+      position:absolute;right:var(--pad);top:clamp(76px, 11vh, 104px);
+      width:268px;
+      font-stretch:var(--cond);font-size:14px;line-height:1.5;
+      color:var(--dim);font-variant-numeric:tabular-nums;
+    }
+    .hud-mode{display:flex;align-items:center;gap:9px;margin:0 0 8px;color:var(--ink);font-weight:600;font-size:15px}
+    .hud-mode i{width:7px;height:7px;border-radius:50%;background:var(--kapton);box-shadow:0 0 0 3px rgba(227,164,58,.2)}
+    .hud dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:1px 16px}
+    .hud dt{white-space:nowrap}
+    .hud dd{margin:0;color:var(--ink);text-align:right;white-space:nowrap}
+    .wheels{display:grid;grid-template-columns:repeat(4, 1fr);gap:6px;align-items:center;align-self:center}
+    .wheels i{position:relative;height:4px;border-radius:2px;background:rgba(188,195,207,.18);overflow:hidden}
+    .wheels i::after{
+      content:"";position:absolute;top:0;bottom:0;left:50%;
+      width:var(--w, 0%);transform:translateX(var(--x, 0));
+      background:var(--kapton);
+    }
+    .hud-hint{margin:10px 0 0;font-size:13.5px;line-height:1.4}
+
+    /* ---------- Content ---------- */
+    main{position:relative;padding-bottom:40px}
+    main::before{content:"";position:absolute;left:0;right:0;top:0;height:96px;background:linear-gradient(var(--space), rgba(11,16,38,0));pointer-events:none}
+
+    /* About */
+    .about{display:grid;grid-template-columns:minmax(0, 380px) minmax(0, 1fr);gap:clamp(40px, 6vw, 96px);align-items:start}
+    .portrait{position:relative;margin:0}
+    .portrait-frame{
+      position:relative;aspect-ratio:4 / 5;border-radius:8px;overflow:hidden;
+      background-color:var(--space-2);
+      background-image:
+        linear-gradient(rgba(188,195,207,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(188,195,207,.05) 1px, transparent 1px);
+      background-size:20px 20px;
+      border:1px solid var(--line);
+    }
+    .portrait-frame img{width:100%;height:100%;object-fit:cover;display:block}
+    .patch{position:absolute;width:136px;right:-26px;bottom:-30px;transform:rotate(-8deg);filter:drop-shadow(0 12px 22px rgba(0,0,0,.5))}
+    .portrait.no-photo .patch{width:74%;right:auto;bottom:auto;left:13%;top:50%;transform:translateY(-50%) rotate(-6deg)}
+    .about-text h2{font-stretch:var(--wide);font-weight:800;font-size:clamp(30px, 3.8vw, 50px);line-height:1.02;margin:0 0 22px}
+    .about-lede{font-size:clamp(21px, 1.9vw, 26px);line-height:1.4;margin:0 0 18px;color:var(--ink);font-weight:500}
+    .about-text p{margin:0 0 16px;color:var(--ink-2);max-width:62ch}
+    .facts{margin:30px 0 0;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:22px 40px}
+    .facts div{border-top:1px solid var(--line);padding-top:12px}
+    .facts dt{font-stretch:var(--cond);color:var(--dim);font-size:15px}
+    .facts dd{margin:2px 0 0;font-weight:500}
+
+    .log{margin-top:clamp(64px, 9vh, 104px)}
+    .log-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:0 0 18px}
+    .log-head h3{font-stretch:112%;font-weight:700;font-size:24px;margin:0}
+    .log-head p{margin:4px 0 0;color:var(--dim);font-size:15.5px}
+    .log-nav{display:flex;gap:10px}
+    .log-nav[hidden]{display:none}
+    .log-strip{
+      display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
+      padding:2px 2px 14px;scrollbar-width:thin;scrollbar-color:rgba(188,195,207,.25) transparent;
+    }
+    .shot{flex:0 0 auto;width:clamp(250px, 29vw, 380px);margin:0;scroll-snap-align:start}
+    .shot-frame{
+      position:relative;aspect-ratio:4 / 3;border-radius:6px;overflow:hidden;
+      background:var(--space-2);border:1px solid var(--line);
+    }
+    .shot img{width:100%;height:100%;object-fit:cover;display:block}
+    .shot figcaption{margin-top:10px;font-stretch:var(--cond);color:var(--dim);font-size:15.5px}
+    .shot.is-missing{display:none}
+    .log.is-empty .shot.is-missing{display:block}
+    .shot.is-missing .shot-frame::before{
+      content:"";position:absolute;inset:12px;border:1px dashed rgba(188,195,207,.25);border-radius:4px;
+    }
+    .shot.is-missing .shot-frame::after{
+      content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;transform:translate(-50%,-50%);opacity:.45;
+      background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23BCC3CF' stroke-width='1.4' stroke-linejoin='round'%3E%3Cpath d='M3 8h4l2-3h6l2 3h4v11H3z'/%3E%3Ccircle cx='12' cy='13' r='3.6'/%3E%3C/svg%3E");
     }
 
-    .card{
-      grid-column: span 12;
-      border-radius: var(--radius);
-      padding: 18px 18px 16px;
-      border:1px solid var(--border);
-      background:
-        radial-gradient(700px 220px at 20% 0%, rgba(139,94,52,.18), transparent 60%),
-        linear-gradient(180deg, rgba(26,17,10,.68), rgba(20,13,7,.78));
-      box-shadow: 0 14px 40px rgba(0,0,0,.45);
-      position:relative;
-      overflow:hidden;
-      transition: transform .25s ease-out, box-shadow .25s ease-out, border-color .25s;
+    .photo img,.shot img,.portrait-frame img{cursor:zoom-in}
+
+    /* Photo viewer */
+    .lightbox{border:0;padding:0;margin:0;background:transparent;color:var(--ink);width:100vw;height:100vh;max-width:none;max-height:none}
+    .lightbox[open]{display:grid;place-items:center}
+    .lightbox::backdrop{background:rgba(4,7,18,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .lb-fig{margin:0;display:grid;gap:14px;justify-items:center}
+    .lb-fig img{max-width:min(92vw, 1400px);max-height:80vh;border-radius:6px;display:block;object-fit:contain}
+    .lb-fig figcaption{color:var(--dim);font-size:15.5px;text-align:center;padding:0 60px}
+    .lb-btn{
+      position:fixed;width:46px;height:46px;border-radius:50%;
+      display:grid;place-items:center;cursor:pointer;
+      background:rgba(11,16,38,.7);color:var(--ink);border:1px solid rgba(188,195,207,.3);
+    }
+    .lb-btn:hover{border-color:var(--kapton)}
+    .lb-btn svg{width:18px;height:18px}
+    .lb-close{top:18px;right:18px}
+    .lb-prev{left:18px;top:calc(50% - 23px)}
+    .lb-next{right:18px;top:calc(50% - 23px)}
+    .lightbox.single .lb-prev,.lightbox.single .lb-next{display:none}
+    .block{max-width:1180px;margin:0 auto;padding:clamp(88px, 12vh, 136px) var(--pad) 0}
+    .block-head{max-width:720px;margin:0 0 clamp(32px, 5vh, 52px)}
+    .block-head h2{
+      font-stretch:var(--wide);font-weight:800;
+      font-size:clamp(30px, 3.8vw, 50px);
+      line-height:1.02;letter-spacing:-.005em;
+      margin:0 0 14px;
+    }
+    .block-head p{margin:0;color:var(--dim);font-size:18px}
+    [id]{scroll-margin-top:80px}
+
+    .rows{list-style:none;margin:0;padding:0}
+    .row{
+      display:grid;
+      grid-template-columns:150px minmax(0, 1fr);
+      gap:10px 44px;
+      padding:34px 0;
+      border-top:1px solid var(--line);
+    }
+    .row.has-photo{grid-template-columns:150px minmax(0, 1fr) minmax(0, 360px)}
+    .when{font-stretch:var(--cond);font-size:16px;line-height:1.45;color:var(--dim);font-variant-numeric:tabular-nums}
+    .when p{margin:0}
+    .when .now{color:var(--kapton);font-weight:600}
+    .row h3{font-stretch:112%;font-weight:700;font-size:22px;line-height:1.22;margin:0 0 6px}
+    .org{margin:0;font-weight:500}
+    .sub{margin:2px 0 14px;color:var(--dim);font-size:15.5px}
+    .row ul{margin:0;padding:0 0 0 18px;color:var(--ink-2)}
+    .row li{margin:0 0 8px}
+    .row li::marker{color:var(--kapton)}
+    .row p.body{margin:0;color:var(--ink-2)}
+
+    .photo{
+      position:relative;margin:0;aspect-ratio:4 / 3;border-radius:6px;overflow:hidden;
+      background-color:var(--space-2);
+      background-image:
+        linear-gradient(rgba(188,195,207,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(188,195,207,.05) 1px, transparent 1px);
+      background-size:20px 20px;
+      border:1px solid var(--line);
+    }
+    .photo svg,.photo img{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .photo img{object-fit:cover}
+
+    .paper-title{margin:0 0 6px;font-weight:600;font-size:19px;line-height:1.38}
+    .paper-venue{margin:0;color:var(--dim);font-size:15.5px}
+
+    .contact{padding-bottom:clamp(80px, 12vh, 120px)}
+    .contact-mail{
+      display:inline-block;margin:6px 0 26px;
+      font-stretch:var(--wide);font-weight:750;
+      font-size:clamp(24px, 4vw, 48px);line-height:1.1;
+      text-decoration:underline;text-decoration-color:var(--kapton);text-decoration-thickness:2px;text-underline-offset:8px;
+      word-break:break-word;
+    }
+    .contact-links{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:11px 20px;border-radius:999px;
+      border:1px solid rgba(188,195,207,.3);
+      text-decoration:none;font-weight:600;font-size:15.5px;
+      transition:border-color .2s, background-color .2s;
+    }
+    .btn:hover{border-color:var(--kapton);background:rgba(227,164,58,.08)}
+    button.btn{background:transparent;color:var(--ink);font:inherit;font-weight:600;font-size:15.5px;cursor:pointer}
+    .btn.is-done{border-color:var(--kapton);color:var(--kapton)}
+    .contact-meta{margin:26px 0 0;color:var(--dim);font-size:15.5px}
+    .contact-meta time{color:var(--ink);font-variant-numeric:tabular-nums}
+
+    .foot{position:relative;max-width:1180px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--dim);font-size:14.5px}
+    .foot a{color:var(--dim);text-decoration:none}
+    .foot a:hover{color:var(--ink)}
+    .foot-in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:28px;border-top:1px solid var(--line)}
+    .foot p{margin:0}
+
+    /* ---------- Small screens ---------- */
+    @media (max-width: 980px){
+      .row.has-photo{grid-template-columns:130px minmax(0, 1fr)}
+      .row.has-photo .photo{grid-column:2}
+    }
+    @media (max-width: 819px){
+      .top-name{display:none}
+      .top{justify-content:flex-end;padding-top:14px;padding-bottom:14px}
+      .top-nav{gap:16px;font-size:14.5px}
+      .copy{left:20px;right:20px;width:auto;top:auto;bottom:22px;transform:none}
+      .intro h1{font-size:clamp(36px, 10.5vw, 48px);margin-bottom:16px}
+      .lede{font-size:16.5px;margin-bottom:14px}
+      .cap-title{font-size:clamp(26px, 7.4vw, 34px);margin-bottom:10px}
+      .cap-line{margin-bottom:18px;font-size:16px}
+      .cap-meta{font-size:14.5px;margin-bottom:10px}
+      .hud{top:64px;right:20px;bottom:auto;width:auto;font-size:13px}
+      .hud-mode{font-size:13.5px;margin-bottom:2px;justify-content:flex-end}
+      .hud .hud-extra,.hud-hint{display:none}
+      .hud dl{grid-template-columns:auto auto}
+      .earth{top:calc(100% - 3.5vh)}
+      .row,.row.has-photo{grid-template-columns:1fr;gap:6px;padding:28px 0}
+      .row.has-photo .photo{grid-column:auto;grid-row:1;margin-bottom:14px}
+      .when{display:flex;gap:16px;flex-wrap:wrap}
+      .about{grid-template-columns:1fr;gap:56px}
+      .portrait{max-width:340px;margin-right:26px}
+      .facts{grid-template-columns:1fr;gap:14px}
+      .shot{width:78vw}
+      .log-head{align-items:flex-start}
+      .lb-prev,.lb-next{top:auto;bottom:22px}
+      .lb-prev{left:calc(50% - 56px)}
+      .lb-next{right:calc(50% - 56px)}
     }
 
-    .card:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 18px 50px rgba(0,0,0,.6);
-      border-color: rgba(220,184,136,.7);
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      .tile-face{transition:none}
+      .caption.flash{animation:none}
     }
-
-    .card:before{
-      content:"";
-      position:absolute;
-      left:14px;
-      right:14px;
-      top:12px;
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(198,154,91,.55), transparent);
-      opacity:.9;
-    }
-
-    .card h3{
-      margin: 10px 0 8px;
-      font-family:"Cinzel", ui-serif, Georgia, serif;
-      font-weight:700;
-      letter-spacing:.03em;
-      font-size:18px;
-    }
-
-    .card-meta{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .tag-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      margin-bottom:8px;
-    }
-    .tag{
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid rgba(210,176,120,.35);
-      color:var(--muted);
-      background:rgba(12,7,4,.6);
-    }
-
-    .more-toggle{
-      font-size:13px;
-      cursor:pointer;
-      color:#dcb888;
-      text-decoration:underline;
-      text-underline-offset:3px;
-    }
-
-    .more-content{
-      display:none;
-      margin-top:6px;
-      font-size:14px;
-      color:var(--muted);
-    }
-
-    @media (min-width: 860px){
-      .card{grid-column: span 6;}
-    }
-
-    .edu-item {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 16px;
-      margin-bottom: 28px;
-      align-items: baseline;
-    }
-
-    .edu-date {
-      font-family: "Cinzel", serif;
-      font-weight: 700;
-      font-size: 16px;
-      color: #dcb888;
-      text-align: left;
-      line-height: 1.4;
-    }
-
-    .edu-content {
-      border-left: 1px solid rgba(210,176,120,.15);
-      padding-left: 16px;
-    }
-
-    .edu-header {
-      font-size: 18px;
-      line-height: 1.3;
-      margin-bottom: 4px;
-      color: var(--text);
-      font-weight: 400;
-    }
-    
-    .edu-header strong {
-      color: #fff;
-      font-weight: 400;
-    }
-
-    .edu-subheader {
-      font-size: 15px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      font-style: italic;
-    }
-    .edu-subheader strong {
-      color: #eaddcf;
-      font-style: normal;
-      font-weight: 400;
-    }
-
-    .edu-list {
-      list-style: none;
-      padding: 0;
-      margin: 4px 0 0 24px;
-      font-size: 15px;
-      color: var(--muted);
-    }
-    .edu-list li {
-      position: relative;
-      padding-left: 14px;
-      margin-bottom: 4px;
-      line-height: 1.5;
-    }
-    .edu-list li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: var(--border);
-    }
-    .edu-list strong {
-      color: #eaddcf;
-      font-weight: 400;
-    }
-
-    @media (max-width: 600px) {
-      .edu-item {
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
-      .edu-content {
-        border-left: none;
-        padding-left: 0;
-      }
-      .edu-date {
-        font-size: 14px;
-        opacity: 0.8;
-        margin-bottom: 2px;
-      }
-    }
-
-    .footer{
-      margin-top: 36px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(210,176,120,.18);
-      color: var(--muted);
-    }
-
-    .reveal{
-      opacity:0;
-      transform:translateY(22px);
-      transition:opacity .5s ease-out, transform .5s ease-out;
-    }
-    .reveal.visible{
-      opacity:1;
-      transform:translateY(0);
-    }
-
   </style>
 </head>
 
-<body>
-  <div class="bg" aria-hidden="true"></div>
-  <div class="scrim" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
-  <div class="parallax-layer" id="starLayer" aria-hidden="true"></div>
+<body class="is-loading">
+  <canvas class="map" id="map" aria-hidden="true"></canvas>
+  <a class="skip" href="#about">Skip to content</a>
 
-  <section class="hero" id="top">
-    <div class="nameplate">
-      <h1 class="hero-title">Ivan Quinsaat</h1>
+  <header class="top" id="top">
+    <a class="top-name" href="#orbit">Ivan Rohan Quinsaat</a>
+    <nav class="top-nav" aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#papers">Papers</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-      <div class="hero-below reveal">
-        <p class="subtitle">Electronics & Mechanical Engineering</p>
-        <div class="divider"></div>
-        <p class="hero-blurb">
-          I like doing prototypes and studying about spacecrafts. I aim to design interplanetary satellites and spacecrafts in the future.
-        </p>
-        <div class="hero-cta">
-          <a href="#projects" class="btn">View my work</a>
-          <a href="#links" class="btn btn-outline">Contact</a>
+  <!-- ======================= ORBIT HERO =======================
+       The ring tiles are built from the MISSIONS list in the script at the bottom.
+       Edit that list to change what orbits the satellite. -->
+  <section class="orbit" id="orbit" aria-label="Missions">
+    <div class="orbit-pin">
+      <canvas class="stars" id="stars" aria-hidden="true"></canvas>
+      <div class="earth" aria-hidden="true"></div>
+
+      <div class="scene" id="scene">
+        <div class="world" id="world">
+          <div class="ring" id="ring"></div>
+
+          <div class="rel-orbit" id="relOrbit" aria-hidden="true"></div>
+          <div class="deputy" id="deputy" aria-hidden="true">
+            <i class="panel foil f-pz"></i><i class="panel f-nz"></i><i class="panel f-px"></i>
+            <i class="panel f-nx"></i><i class="panel f-py"></i><i class="panel f-ny"></i>
+          </div>
+
+          <div class="sat" id="sat" aria-hidden="true">
+            <i class="panel foil f-pz" data-n="0,0,1"></i>
+            <i class="panel foil f-nz" data-n="0,0,-1"></i>
+            <i class="panel f-px" data-n="1,0,0"></i>
+            <i class="panel f-nx" data-n="-1,0,0"></i>
+            <i class="panel f-py" data-n="0,1,0"></i>
+            <i class="panel f-ny" data-n="0,-1,0"></i>
+            <i class="hinge h-px" id="hingePx"><i class="panel" data-wing="px"></i></i>
+            <i class="hinge h-nx" id="hingeNx"><i class="panel" data-wing="nx"></i></i>
+            <i class="boom" id="boom"><i></i><i></i></i>
+          </div>
         </div>
       </div>
+
+      <div class="copy">
+        <div class="intro" id="intro">
+          <h1>Ivan Rohan Quinsaat</h1>
+          <p class="lede">Electronics engineering student at UP Diliman working on small satellites: attitude control, deployable antennas, and formation-flying GNC. <strong>Currently an ADCS intern at Tensor Tech in Taipei.</strong></p>
+          <p class="hint">Scroll to rotate through my missions, or <a href="#experience">skip to the full list</a>.</p>
+        </div>
+
+        <div class="caption" id="caption" aria-live="polite">
+          <p class="cap-meta"><span class="cap-index" id="capIndex"></span><span id="capWhen"></span><span id="capWhere"></span></p>
+          <p class="cap-title" id="capTitle"></p>
+          <p class="cap-org" id="capOrg"></p>
+          <p class="cap-line" id="capLine"></p>
+          <div class="cap-actions">
+            <a class="cap-link" id="capLink" href="#experience">Read the full entry</a>
+            <button class="step" id="prevBtn" type="button" aria-label="Previous mission">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
+            </button>
+            <button class="step" id="nextBtn" type="button" aria-label="Next mission">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hud" id="hud" aria-label="Live attitude control readout">
+        <p class="hud-mode"><i></i><span id="hudMode">Deploying solar arrays</span></p>
+        <dl>
+          <dt>Pointing error</dt><dd id="hudErr">–</dd>
+          <dt class="hud-extra">Body rate</dt><dd class="hud-extra" id="hudRate">–</dd>
+          <dt class="hud-extra">Attitude q</dt><dd class="hud-extra" id="hudQ">–</dd>
+          <dt class="hud-extra">Wheels</dt><dd class="hud-extra wheels" id="hudWheels"><i></i><i></i><i></i><i></i></dd>
+        </dl>
+        <p class="hud-hint" id="hudHint">Move your pointer and the satellite slews to track it.</p>
+      </aside>
     </div>
   </section>
 
-  <div class="wrap">
+  <main id="main">
 
-    <div class="section reveal" id="about">
-      <h2>About</h2>
-      <p class="muted">
-        Aerospace focused electronics engineering student with strong interest in spacecraft attitude control, formation flying, and deployable structures. 
-        Contributed to the development of a 4 axis reaction wheel testbed for ADCS research at the Philippine Space Agency and is currently working 
-        on the next Origami Satellite at Tokyo Tech’s SDDL under Prof. Hiraku Sakamoto through MOVE UP funding. Maintains Magna Cum Laude standing 
-        at UP Diliman and is seeking an internship in ADCS and/or GNC with a strong emphasis on hands on prototyping.
-      </p>
+    <!-- ======================= ABOUT =======================
+         Portrait: put your photo at assets/about/portrait.jpg (portrait orientation, 4:5).
+         Without it, the mission patch fills the frame. -->
+    <section class="block" id="about" data-place="all">
+      <div class="about">
+        <figure class="portrait">
+          <div class="portrait-frame">
+            <img src="assets/about/portrait.jpg" alt="Ivan Rohan Quinsaat" onerror="this.closest('.portrait').classList.add('no-photo');this.remove()">
+          </div>
+          <svg class="patch" viewBox="0 0 240 240" role="img" aria-label="Mission patch: a CubeSat with deployed arrays and a deputy satellite on a relative orbit">
+            <defs>
+              <path id="patchTop" d="M 36 120 A 84 84 0 0 1 204 120"/>
+              <path id="patchBot" d="M 22 120 A 98 98 0 0 0 218 120"/>
+              <clipPath id="patchClip"><circle cx="120" cy="120" r="70"/></clipPath>
+              <linearGradient id="patchFoil" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#F6CF6E"/><stop offset=".4" stop-color="#C98A24"/><stop offset=".65" stop-color="#F0BD55"/><stop offset="1" stop-color="#9C6214"/>
+              </linearGradient>
+            </defs>
+            <circle cx="120" cy="120" r="115" fill="#10183B" stroke="#E3A43A" stroke-width="8"/>
+            <circle cx="120" cy="120" r="103" fill="none" stroke="#E3A43A" stroke-opacity=".35"/>
+            <circle cx="120" cy="120" r="72" fill="#0B1026" stroke="#E3A43A" stroke-width="2.5"/>
+            <g clip-path="url(#patchClip)">
+              <circle cx="120" cy="312" r="160" fill="#16244F" stroke="#74C4FF" stroke-width="2.5"/>
+              <g fill="#E7E9F0"><circle cx="80" cy="82" r="1.4"/><circle cx="96" cy="64" r="1"/><circle cx="158" cy="68" r="1.3"/><circle cx="172" cy="126" r="1"/><circle cx="70" cy="128" r="1"/><circle cx="140" cy="58" r=".9"/></g>
+              <ellipse cx="120" cy="112" rx="48" ry="22" fill="none" stroke="#74C4FF" stroke-opacity=".7" stroke-dasharray="3 4" transform="rotate(-14 120 112)"/>
+              <rect x="157" y="92" width="8" height="8" rx="1" fill="#BCC3CF"/>
+              <line x1="120" y1="101" x2="120" y2="76" stroke="#E7E9F0" stroke-width="1.6"/>
+              <rect x="84" y="104" width="24" height="16" rx="1" fill="#22357A" stroke="#AEB6C3" stroke-width="1.2"/>
+              <rect x="132" y="104" width="24" height="16" rx="1" fill="#22357A" stroke="#AEB6C3" stroke-width="1.2"/>
+              <path d="M96 104v16M144 104v16" stroke="#AEB6C3" stroke-width=".8"/>
+              <rect x="109" y="101" width="22" height="22" rx="1.5" fill="url(#patchFoil)" stroke="#AEB6C3" stroke-width="1.2"/>
+              <circle cx="120" cy="112" r="4.2" fill="#0B1026" stroke="#C9CED6" stroke-width="1.2"/>
+            </g>
+            <text font-family="Archivo, sans-serif" font-weight="800" font-size="14.5" letter-spacing="2.4" fill="#E7E9F0"><textPath href="#patchTop" startOffset="50%" text-anchor="middle">IVAN ROHAN QUINSAAT</textPath></text>
+            <text font-family="Archivo, sans-serif" font-weight="700" font-size="11.5" letter-spacing="3.2" fill="#E3A43A"><textPath href="#patchBot" startOffset="50%" text-anchor="middle">ADCS   GNC   DEPLOYABLES</textPath></text>
+          </svg>
+        </figure>
+
+        <div class="about-text">
+          <h2>About</h2>
+          <p class="about-lede">I'm Ivan. I like turning ideas into prototypes I can hold, test, and sometimes break.</p>
+          <p>Since 2025 that has meant a reaction-wheel testbed at the Philippine Space Agency, origami antennas and live satellite passes in Tokyo, and now attitude control work in Taipei. What ties it together is how small satellites move: how one knows where it's pointing, and how several can fly together.</p>
+          <p>Long term, I want to help design interplanetary spacecraft.</p>
+          <dl class="facts">
+            <div><dt>Studying</dt><dd>B.S. Electronics Engineering, UP Diliman, class of 2028</dd></div>
+            <div><dt>Currently</dt><dd>ADCS intern at Tensor Tech, Taipei</dd></div>
+            <div><dt>Focus</dt><dd>ADCS, formation-flying GNC, deployable structures</dd></div>
+            <div><dt>Worked in</dt><dd>Philippines, Japan, Taiwan</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Photo log: add photos at these paths and edit the captions.
+           Slots without a photo are hidden automatically once at least one photo exists. -->
+      <div class="log" id="photoLog">
+        <div class="log-head">
+          <div>
+            <h3>Photo log</h3>
+            <p>Labs, launches, and conferences along the way.</p>
+          </div>
+          <div class="log-nav">
+            <button class="step" type="button" data-dir="-1" aria-label="Scroll photos left">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
+            </button>
+            <button class="step" type="button" data-dir="1" aria-label="Scroll photos right">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="log-strip" id="logStrip" tabindex="0" aria-label="Photos">
+          <figure class="shot"><div class="shot-frame"><img src="assets/gallery/01.jpg" alt="Photo from Tokyo, 2026"></div><figcaption>Tokyo, 2026</figcaption></figure>
+          <figure class="shot"><div class="shot-frame"><img src="assets/gallery/02.jpg" alt="Photo from Tokyo, 2026"></div><figcaption>Tokyo, 2026</figcaption></figure>
+          <figure class="shot"><div class="shot-frame"><img src="assets/gallery/03.jpg" alt="Photo from Tainan, 2026"></div><figcaption>Tainan, 2026</figcaption></figure>
+          <figure class="shot"><div class="shot-frame"><img src="assets/gallery/04.jpg" alt="Photo from Taipei, 2026"></div><figcaption>Taipei, 2026</figcaption></figure>
+          <figure class="shot"><div class="shot-frame"><img src="assets/gallery/05.jpg" alt="Photo from Quezon City, 2025"></div><figcaption>Quezon City, 2025</figcaption></figure>
+          <figure class="shot"><div class="shot-frame"><img src="assets/gallery/06.jpg" alt="Photo from UP Diliman"></div><figcaption>UP Diliman</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= EXPERIENCE =======================
+         Photos: put files at the paths in each <img src>. Until a photo exists,
+         a line drawing shows instead (chosen by data-illus). -->
+    <section class="block" id="experience">
+      <div class="block-head">
+        <h2>Experience</h2>
+        <p>Spacecraft hardware and research, current work first.</p>
+      </div>
+
+      <ol class="rows">
+        <li class="row has-photo" id="exp-tensor" data-place="taipei">
+          <div class="when"><p class="now">Sep–Dec 2026</p><p>Taipei, Taiwan</p></div>
+          <div>
+            <h3>Satellite ADCS intern</h3>
+            <p class="org">Tensor Tech</p>
+            <p class="sub">Taiwan Experience Education Program (TEEP). Adviser: Prof. Loren Chang</p>
+            <ul>
+              <li>Ongoing internship in attitude determination and control systems for small satellites.</li>
+            </ul>
+          </div>
+          <figure class="photo" data-illus="triad">
+            <img src="assets/missions/tensor-tech.jpg" alt="Working on ADCS hardware at Tensor Tech" loading="lazy" onerror="this.remove()">
+          </figure>
+        </li>
+
+        <li class="row has-photo" id="exp-wcel" data-place="quezon">
+          <div class="when"><p class="now">Aug 2025 – now</p><p>Quezon City, Philippines</p></div>
+          <div>
+            <h3>Formation-flying research</h3>
+            <p class="org">UP Diliman, Wireless Communications Engineering Laboratory (WCEL)</p>
+            <p class="sub">Adviser: Dr. Charleston Ambatali</p>
+            <ul>
+              <li>Research on guidance, navigation, and control for satellites flying in formation.</li>
+            </ul>
+          </div>
+          <figure class="photo" data-illus="ff">
+            <img src="assets/missions/formation-flying.jpg" alt="Relative orbit simulation for satellite formation flying" loading="lazy" onerror="this.remove()">
+          </figure>
+        </li>
+
+        <li class="row has-photo" id="exp-origami3" data-place="tokyo">
+          <div class="when"><p>Apr–Aug 2026</p><p>Tokyo, Japan</p></div>
+          <div>
+            <h3>Deployable antenna payload for OrigamiSat-3</h3>
+            <p class="org">Institute of Science Tokyo, Space-structure Dynamics Design Lab</p>
+            <p class="sub">Young Science and Engineering Researchers Program (YSEP). Adviser: Prof. Hiraku Sakamoto</p>
+            <ul>
+              <li>Designed and evaluated the initial version of a deployable antenna payload: membrane folding patterns, stowage layout, deployment electronics, and mechanical architecture.</li>
+              <li>Developed and fabricated two prototypes that deploy a membrane antenna from a 1U nanosatellite payload.</li>
+            </ul>
+          </div>
+          <figure class="photo" data-illus="miura">
+            <img src="assets/missions/origamisat3-prototype.jpg" alt="Membrane antenna deployment prototype for OrigamiSat-3" loading="lazy" onerror="this.remove()">
+          </figure>
+        </li>
+
+        <li class="row has-photo" id="exp-origami2" data-place="tokyo">
+          <div class="when"><p>Apr–Aug 2026</p><p>Tokyo, Japan</p></div>
+          <div>
+            <h3>Ground station operations for OrigamiSat-2</h3>
+            <p class="org">Institute of Science Tokyo</p>
+            <p class="sub">JAXA Innovative Satellite 4 Program. Adviser: Prof. Hiraku Sakamoto</p>
+            <ul>
+              <li>Conducted UHF and C-band ground station operations for OrigamiSat-2 while it was in orbit.</li>
+              <li>Adjusted antenna pointing and analyzed telemetry for health monitoring and on-orbit communications.</li>
+            </ul>
+          </div>
+          <figure class="photo" data-illus="dish">
+            <img src="assets/missions/origamisat2-groundstation.jpg" alt="Ground station antennas used for OrigamiSat-2 passes" loading="lazy" onerror="this.remove()">
+          </figure>
+        </li>
+
+        <li class="row has-photo" id="exp-philsa" data-place="quezon">
+          <div class="when"><p>Jun–Sep 2025</p><p>Quezon City, Philippines</p></div>
+          <div>
+            <h3>Mechanical and autonomous systems engineering intern</h3>
+            <p class="org">Philippine Space Agency (PhilSA)</p>
+            <p class="sub">Spacecraft Mechanical and Autonomous Systems Development Division. Adviser: Engr. Manuel Del Rosario</p>
+            <ul>
+              <li>Designed a four-wheel reaction-wheel ADCS testbed, integrating its mechanical assemblies with sensors and actuators.</li>
+              <li>Programmed microcontroller firmware in C to interface with the sensors and reaction-wheel hardware.</li>
+            </ul>
+          </div>
+          <figure class="photo" data-illus="wheels">
+            <img src="assets/missions/philsa-testbed.jpg" alt="Four-wheel reaction-wheel ADCS testbed at PhilSA" loading="lazy" onerror="this.remove()">
+          </figure>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ======================= PAPERS ======================= -->
+    <section class="block" id="papers">
+      <div class="block-head">
+        <h2>Papers and talks</h2>
+        <p>Four conference papers in 2026, one as first author.</p>
+      </div>
+
+      <ol class="rows">
+        <li class="row" data-place="tainan">
+          <div class="when"><p>Nov 2026</p><p class="now">First author</p></div>
+          <div>
+            <p class="paper-title">Development of an Origami Antenna Deployment Mechanism Accommodating Substrate Thickness for Nanosatellites</p>
+            <p class="paper-venue">15th Nano-Satellite Symposium+ (NSAT+), Tainan, Taiwan</p>
+          </div>
+        </li>
+        <li class="row" data-place="utsunomiya">
+          <div class="when"><p>Nov 2026</p><p>Co-author</p></div>
+          <div>
+            <p class="paper-title">Evaluation of the Stowage and Deployment Characteristics of a Membrane-Based Reconfigurable Reflectarray Antenna Structure</p>
+            <p class="paper-venue">70th Space Sciences and Technology Conference, Utsunomiya, Japan</p>
+          </div>
+        </li>
+        <li class="row" data-place="utsunomiya">
+          <div class="when"><p>Nov 2026</p><p>Co-author</p></div>
+          <div>
+            <p class="paper-title">On-Orbit Attitude Data Analysis of the OrigamiSat-2 CubeSat with a Deployable Membrane Antenna Structure</p>
+            <p class="paper-venue">70th Space Sciences and Technology Conference, Utsunomiya, Japan (accepted)</p>
+          </div>
+        </li>
+        <li class="row" data-place="antalya">
+          <div class="when"><p>Oct 2026</p><p>Co-author</p></div>
+          <div>
+            <p class="paper-title">L-Band Radio Frequency Interference Detection and Collection Payload-System on a Picosatellite Platform</p>
+            <p class="paper-venue">77th International Astronautical Congress (IAC 2026), Antalya, Türkiye</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ======================= CONTACT ======================= -->
+    <section class="block contact" id="contact" data-place="taipei">
+      <div class="block-head">
+        <h2>Get in touch</h2>
+        <p>I'm open to research internships and collaborations in ADCS and GNC, especially work that involves building and testing hardware.</p>
+      </div>
+      <a class="contact-mail" href="mailto:icquinsaat@up.edu.ph">icquinsaat@up.edu.ph</a>
+      <div class="contact-links">
+        <button class="btn" type="button" id="copyEmail" data-email="icquinsaat@up.edu.ph">Copy email</button>
+        <a class="btn" href="https://www.linkedin.com/in/ivan-rohan-quinsaat-388595358/" target="_blank" rel="noreferrer">LinkedIn</a>
+      </div>
+      <p class="contact-meta">Currently in Taipei, Taiwan. Local time <time id="localTime">--:--</time> (UTC+8).</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-in">
+      <p>© 2026 Ivan Rohan Quinsaat</p>
+      <a href="#orbit">Back to top</a>
     </div>
+  </footer>
 
-    <div class="section reveal" id="projects">
-      <h2>Featured projects</h2>
-
-      <div class="grid">
-        <div class="card">
-          <h3>Low-Cost IMU for Attitude Prototyping</h3>
-          <div class="tag-row">
-            <span class="tag">embedded</span>
-            <span class="tag">sensor fusion</span>
-            <span class="tag">control</span>
-          </div>
-          <p>
-            A low-cost IMU platform using locally available hardware with on-board filtering
-            to suppress bias drift and noise for small satellite attitude experiments. It supports
-            wireless streaming to a Python-based 3D visualization tool for rapid control prototyping.
-          </p>
-        </div>
-        <div class="card">
-          <h3>Dual-Module Key Presence Indicator</h3>
-          <div class="tag-row">
-            <span class="tag">embedded</span>
-            <span class="tag">rapid prototyping</span>
-            <span class="tag">3d printing</span>
-
-          </div>
-          <p>
-            A dual-module key presence indicator using two ESP32 microcontrollers connected via Wi-Fi with 
-            Slack incoming webhooks for remote notification. The system physically separates sensing and indication, 
-            allowing for the placements to be in different locations.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="section reveal" id="education">
-      <h2>Education</h2>
-      
-      <div class="edu-item">
-        <div class="edu-date">Ongoing</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>B.S. Electronics Engineering</strong> | University of the Philippines, Diliman
-          </div>
-          <div class="edu-subheader">
-            Expected Graduation: June 2028
-          </div>
-          <ul class="edu-list">
-            <li><strong>Lab Affiliation:</strong> Wireless Communications Engineering Laboratory (WCEL)</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">Ongoing</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>International Research Student</strong> | Institute of Science Tokyo (Science Tokyo)
-          </div>
-          <div class="edu-subheader">
-            Expected Completion: September 2026 | <strong>Young Science and Engineering Researchers Program (YSEP)</strong>
-          </div>
-          <ul class="edu-list">
-            <li><strong>Lab Affiliation:</strong> Sakamoto Laboratory, Space-structure Dynamics Design Laboratory (SDDL)</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">2023</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Senior High School, STEM Track</strong> | University of Santo Tomas, Manila
-          </div>
-          <div class="edu-subheader">
-            Graduated: April 2023 | <strong>2023 STEM Batch Valedictorian</strong>
-          </div>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">2021</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Junior High School</strong> | Saint Louis College, La Union
-          </div>
-          <div class="edu-subheader">
-            Graduated: March 2021 | <strong>2021 Batch Valedictorian</strong>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="section reveal" id="work">
-      <h2>Work Experience</h2>
-      
-      <div class="edu-item">
-        <div class="edu-date">Incoming</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Project Technical Aide VI</strong> | HALE-PH ALPHA
-          </div>
-          <div class="edu-subheader">
-            University of the Philippines Department of Mechanical Engineering
-          </div>
-        </div>
-      </div>
-      
-      <div class="edu-item">
-        <div class="edu-date">Jun 2025 – <br>Sept 2025</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Mechanical and Autonomous Systems Engineering Associate</strong> | Philippine Space Agency (PhilSA)
-          </div>
-          <div class="edu-subheader">
-            Spacecraft Mechanical and Autonomous Systems Development Division (SMASDD)
-          </div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-date">Aug 2025 – <br>Dec 2025</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Student Assistant</strong> | UP Diliman Electrical and Electronics Engineering Institute
-          </div>
-          <div class="edu-subheader">
-            EEE 137 Probability, Statistics and Random Processes in Electrical and Electronics Engineering
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="section reveal" id="leadership">
-      <h2>Leadership & Affiliations</h2>
-
-      <div class="edu-item">
-        <div class="edu-date">Jan 2026 – <br>Present</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>UNISEC-Global Student Representative</strong>
-          </div>
-          <div class="edu-subheader">
-            University of the Philippines-Diliman Chapter
-          </div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-date">Apr 2026 - <br>Present</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Laboratory Affiliate</strong> | Institute of Science Tokyo Department of Mechanical Engineering
-          </div>
-          <div class="edu-subheader">
-            Space-Structure Dynamics Design Lab (SDDL)
-          </div>
-        </div>
-      </div>
-
-       <div class="edu-item">
-        <div class="edu-date">Aug 2025 - <br>Present</div>
-        <div class="edu-content">
-          <div class="edu-header">
-            <strong>Laboratory Affiliate</strong> | UP Diliman Electrical and Electronics Engineering Institute
-          </div>
-          <div class="edu-subheader">
-            Wireless Communications Engineering Laboratory (WCEL)
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="section footer reveal" id="links">
-      <h2>Links</h2>
-      <p>
-        <a href="https://www.linkedin.com/in/ivan-rohan-quinsaat-388595358/" target="_blank" rel="noreferrer">LinkedIn</a> ·
-        <a href="mailto:ivan.rohan.quinsaat@eee.upd.edu.ph">Email</a>
-      </p>
-    </div>
-
-  </div>
+  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
+    <figure class="lb-fig"><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+    <button class="lb-btn lb-close" type="button" aria-label="Close photo">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+    </button>
+    <button class="lb-btn lb-prev" type="button" aria-label="Previous photo">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
+    </button>
+    <button class="lb-btn lb-next" type="button" aria-label="Next photo">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
+    </button>
+  </dialog>
 
   <script>
-    window.addEventListener('scroll', () => {
-      const scrolled = window.scrollY;
-      const limit = 500; 
-      const maxDarkness = 0.7; 
-      let opacity = Math.min(scrolled / limit, 1) * maxDarkness;
-      document.querySelector('.scrim').style.opacity = opacity;
+  (() => {
+    /* =========================================================
+       MISSIONS: the tiles orbiting the satellite, oldest first.
+       img:   your photo (leave the file missing and a drawing shows instead)
+       illus: which drawing to use as the fallback
+       href:  where "Read the full entry" goes
+       ========================================================= */
+    const MISSIONS = [
+      { short: 'Reaction-wheel testbed', year: '2025',
+        title: 'Four-wheel reaction-wheel ADCS testbed',
+        when: 'Jun–Sep 2025', where: 'Quezon City, Philippines',
+        org: 'Philippine Space Agency (PhilSA)',
+        line: 'Designed a four-wheel testbed for attitude control research and wrote the C firmware connecting its sensors and wheels.',
+        href: '#exp-philsa', cta: 'Read the full entry',
+        img: 'assets/missions/philsa-testbed.jpg', illus: 'wheels' },
+      { short: 'OrigamiSat-3 antenna', year: '2026',
+        title: 'Deployable membrane antenna for OrigamiSat-3',
+        when: 'Apr–Aug 2026', where: 'Tokyo, Japan',
+        org: 'Institute of Science Tokyo, Sakamoto Lab',
+        line: 'Designed the initial version of a folding membrane antenna payload and built two prototypes that deploy it from a 1U nanosatellite payload.',
+        href: '#exp-origami3', cta: 'Read the full entry',
+        img: 'assets/missions/origamisat3-prototype.jpg', illus: 'miura' },
+      { short: 'OrigamiSat-2 passes', year: '2026',
+        title: 'Ground station operations for OrigamiSat-2',
+        when: 'Apr–Aug 2026', where: 'Tokyo, Japan',
+        org: 'Institute of Science Tokyo, JAXA Innovative Satellite 4',
+        line: 'Ran UHF and C-band passes for a satellite in orbit, adjusting antenna pointing and reading telemetry to check its health.',
+        href: '#exp-origami2', cta: 'Read the full entry',
+        img: 'assets/missions/origamisat2-groundstation.jpg', illus: 'dish' },
+      { short: 'ADCS at Tensor Tech', year: 'Now',
+        title: 'Satellite ADCS internship',
+        when: 'Sep–Dec 2026', where: 'Taipei, Taiwan',
+        org: 'Tensor Tech, through the Taiwan Experience Education Program',
+        line: 'Working on attitude determination and control systems for small satellites. In progress.',
+        href: '#exp-tensor', cta: 'Read the full entry',
+        img: 'assets/missions/tensor-tech.jpg', illus: 'triad' },
+      { short: 'IAC 2026 paper', year: '2026',
+        title: 'L-band interference payload at IAC 2026',
+        when: 'Oct 2026', where: 'Antalya, Türkiye',
+        org: '77th International Astronautical Congress',
+        line: 'Co-authored a picosatellite payload that detects and collects L-band radio-frequency interference.',
+        href: '#papers', cta: 'See the paper',
+        img: 'assets/missions/iac-2026.jpg', illus: 'rfi' },
+      { short: 'First-author paper', year: '2026',
+        title: 'Origami antenna deployment at NSAT+',
+        when: 'Nov 2026', where: 'Tainan, Taiwan',
+        org: '15th Nano-Satellite Symposium+',
+        line: 'First-author paper on an origami antenna deployment mechanism that accommodates real substrate thickness.',
+        href: '#papers', cta: 'See the paper',
+        img: 'assets/missions/nsat-2026.jpg', illus: 'thickfold' },
+      { short: 'Formation flying', year: 'Next',
+        title: 'Next: formation-flying GNC',
+        when: 'Ongoing', where: 'UP Diliman',
+        org: 'Wireless Communications Engineering Laboratory',
+        line: 'Where my research is headed: guidance, navigation, and control for small satellites flying in formation.',
+        href: '#exp-wcel', cta: 'Read the full entry',
+        img: 'assets/missions/formation-flying.jpg', illus: 'ff' },
+    ];
 
-      const offsetSlow = scrolled * 0.03;
-      const offsetFast = scrolled * 0.06;
-
-      document.querySelectorAll('.star.slow')
-        .forEach(el => el.style.transform = `translateY(${offsetSlow}px)`);
-      document.querySelectorAll('.star.fast')
-        .forEach(el => el.style.transform = `translateY(${offsetFast}px)`);
+    /* ---------- Line drawings shown until a photo is added ---------- */
+    const K = '#E3A43A', A = '#BCC3CF', L = '#74C4FF';
+    const svg = body => `<svg viewBox="0 0 400 300" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" font-family="Archivo, sans-serif" aria-hidden="true" preserveAspectRatio="xMidYMid slice">${body}</svg>`;
+    const arrow = (x1, y1, x2, y2, c, o = 1) => {
+      const a = Math.atan2(y2 - y1, x2 - x1), h = 9;
+      const p1 = [x2 - h * Math.cos(a - .45), y2 - h * Math.sin(a - .45)];
+      const p2 = [x2 - h * Math.cos(a + .45), y2 - h * Math.sin(a + .45)];
+      return `<path d="M${x1} ${y1}L${x2} ${y2}M${p1}L${x2} ${y2}L${p2}" stroke="${c}" stroke-opacity="${o}"/>`;
+    };
+    const ILLUS = {
+      wheels(){
+        let g = '';
+        [45, 135, 225, 315].forEach(a => {
+          g += `<g transform="rotate(${a} 200 150)"><line x1="222" y1="150" x2="258" y2="150" stroke="${A}" stroke-opacity=".5"/><ellipse cx="268" cy="150" rx="8" ry="30" stroke="${K}"/><ellipse cx="268" cy="150" rx="3" ry="11" stroke="${K}" stroke-opacity=".55"/></g>`;
+        });
+        return svg(`<circle cx="200" cy="150" r="108" stroke="${A}" stroke-opacity=".28"/><circle cx="200" cy="150" r="126" stroke="${A}" stroke-opacity=".14" stroke-dasharray="2 6"/><rect x="180" y="130" width="40" height="40" rx="3" stroke="${A}" stroke-opacity=".7"/><circle cx="200" cy="150" r="4" fill="${K}" stroke="none"/>${g}<path d="M200 14v18M200 268v18M62 150h18M320 150h18" stroke="${L}" stroke-opacity=".5"/>`);
+      },
+      miura(){
+        const x0 = 150, y0 = 56, cols = 6, rows = 5, cw = 36, rh = 37, off = 12;
+        let s = '';
+        for (let i = 0; i <= rows; i++) {
+          const y = y0 + i * rh, dx = i % 2 ? off : 0;
+          s += `<line x1="${x0 + dx}" y1="${y}" x2="${x0 + cols * cw + dx}" y2="${y}" stroke="${A}" stroke-opacity=".45"/>`;
+        }
+        for (let j = 0; j <= cols; j++) {
+          const pts = [];
+          for (let i = 0; i <= rows; i++) pts.push(`${x0 + j * cw + (i % 2 ? off : 0)},${y0 + i * rh}`);
+          s += `<polyline points="${pts.join(' ')}" stroke="${j % 2 ? A : K}" ${j % 2 ? 'stroke-dasharray="4 4" stroke-opacity=".7"' : ''}/>`;
+        }
+        return svg(`<rect x="44" y="184" width="62" height="62" rx="3" stroke="${A}" stroke-opacity=".75"/><rect x="54" y="194" width="42" height="42" rx="2" stroke="${A}" stroke-opacity=".3"/><path d="M106 186 150 ${y0}M106 244 ${150 + off} ${y0 + rows * rh}" stroke="${K}" stroke-opacity=".45" stroke-dasharray="3 5"/>${s}`);
+      },
+      dish(){
+        return svg(`<path d="M24 120C120 34 280 24 380 70" stroke="${L}" stroke-opacity=".4" stroke-dasharray="3 7"/><path d="M40 254H360" stroke="${A}" stroke-opacity=".3"/><path d="M190 254 206 236 222 254" stroke="${A}" stroke-opacity=".7"/><path d="M136 172C146 232 236 254 288 206" stroke="${K}"/><path d="M136 172 288 206" stroke="${K}" stroke-opacity=".4" stroke-dasharray="3 5"/><path d="M160 180 240 146M270 202 240 146" stroke="${A}" stroke-opacity=".55"/><circle cx="240" cy="146" r="5" stroke="${K}"/><path d="M246 140 316 84" stroke="${L}" stroke-opacity=".7" stroke-dasharray="3 6"/><rect x="316" y="66" width="16" height="16" rx="1" stroke="${A}"/><path d="M300 74h16M332 74h16" stroke="${K}"/><path d="M280 116a40 40 0 0 1 20-28M268 108a56 56 0 0 1 26-38" stroke="${L}" stroke-opacity=".45"/>`);
+      },
+      triad(){
+        const stars = [[60,60],[96,34],[330,44],[350,96],[300,30],[40,120],[362,140],[120,80]]
+          .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 1.2 : 1.8}" fill="${A}" fill-opacity=".6" stroke="none"/>`).join('');
+        return svg(`${stars}<path d="M200 118 252 148 200 178 148 148Z" stroke="${K}"/><path d="M148 148 200 178 200 236 148 206Z M252 148 200 178 200 236 252 206Z" stroke="${A}" stroke-opacity=".7"/>${arrow(200, 178, 330, 250, L)}${arrow(200, 178, 70, 250, L)}${arrow(200, 178, 200, 46, L)}<path d="M176 74a26 9 0 1 0 48 0" stroke="${K}" stroke-opacity=".8"/>${arrow(220, 79, 225, 73, K, .8)}<text x="340" y="262" fill="${A}" font-size="16" font-style="italic" stroke="none">x</text><text x="54" y="262" fill="${A}" font-size="16" font-style="italic" stroke="none">y</text><text x="208" y="44" fill="${A}" font-size="16" font-style="italic" stroke="none">z</text>`);
+      },
+      rfi(){
+        const pts = [];
+        for (let x = 52; x <= 356; x += 3) {
+          const y = 222 + 5 * Math.sin(x * .9) + 3.5 * Math.sin(x * 2.3 + 1) + 2 * Math.sin(x * 5.1)
+                  - 128 * Math.exp(-(((x - 238) / 6) ** 2)) - 26 * Math.exp(-(((x - 252) / 9) ** 2));
+          pts.push(`${x},${y.toFixed(1)}`);
+        }
+        return svg(`<path d="M48 248H362M48 248V52" stroke="${A}" stroke-opacity=".4"/><path d="M48 168H362" stroke="${L}" stroke-opacity=".6" stroke-dasharray="4 6"/><polyline points="${pts.join(' ')}" stroke="${K}"/><circle cx="238" cy="94" r="9" stroke="${A}" stroke-opacity=".7"/><rect x="82" y="72" width="22" height="22" rx="2" stroke="${A}"/><rect x="88" y="78" width="10" height="10" stroke="${K}"/><path d="M114 70a16 16 0 0 1 0 26M122 62a28 28 0 0 1 0 42" stroke="${L}" stroke-opacity=".55"/>`);
+      },
+      thickfold(){
+        const P = [[60,214],[120,116],[180,214],[240,116],[300,214],[350,150]], t = 13;
+        let s = '';
+        for (let i = 0; i < P.length - 1; i++) {
+          const [x1, y1] = P[i], [x2, y2] = P[i + 1];
+          const len = Math.hypot(x2 - x1, y2 - y1), nx = -(y2 - y1) / len * t, ny = (x2 - x1) / len * t;
+          s += `<path d="M${x1} ${y1}L${x2} ${y2}L${(x2 + nx).toFixed(1)} ${(y2 + ny).toFixed(1)}L${(x1 + nx).toFixed(1)} ${(y1 + ny).toFixed(1)}Z" stroke="${K}" fill="${K}" fill-opacity=".07"/>`;
+        }
+        P.slice(1, -1).forEach(([x, y]) => { s += `<circle cx="${x}" cy="${y}" r="6" stroke="${A}"/>`; });
+        return svg(`<path d="M36 246H364" stroke="${A}" stroke-opacity=".3"/>${s}<path d="M50 96v20M44 96h12M44 116h12" stroke="${L}" stroke-opacity=".7"/><text x="62" y="112" fill="${L}" fill-opacity=".8" font-size="15" font-style="italic" stroke="none">t</text>`);
+      },
+      ff(){
+        return svg(`<ellipse cx="200" cy="152" rx="130" ry="65" stroke="${L}" stroke-opacity=".6" stroke-dasharray="4 6"/>${arrow(200, 152, 356, 152, A, .55)}${arrow(200, 152, 200, 40, A, .55)}<text x="290" y="176" fill="${A}" fill-opacity=".75" font-size="13" stroke="none">along-track</text><text x="210" y="50" fill="${A}" fill-opacity=".75" font-size="13" stroke="none">radial</text><path d="M200 152 298 110" stroke="${K}" stroke-opacity=".55" stroke-dasharray="3 5"/><rect x="191" y="143" width="18" height="18" rx="1" stroke="${K}"/><path d="M174 152h17M209 152h17" stroke="${K}"/><rect x="292" y="104" width="12" height="12" rx="1" stroke="${A}"/><path d="M281 110h11M304 110h11" stroke="${A}"/>`);
+      },
+    };
+    document.querySelectorAll('[data-illus]').forEach(el => {
+      const f = ILLUS[el.dataset.illus];
+      if (f) el.insertAdjacentHTML('afterbegin', f());
     });
 
-    const starLayer = document.getElementById('starLayer');
-    const STAR_COUNT = 40;
-    for (let i=0; i<STAR_COUNT; i++){
-      const s = document.createElement('div');
-      s.className = 'star ' + (Math.random() > 0.5 ? 'slow' : 'fast');
-      s.style.left = (Math.random()*100) + 'vw';
-      s.style.top  = (Math.random()*100) + 'vh';
-      starLayer.appendChild(s);
+    /* ---------- Setup ---------- */
+    const $ = s => document.querySelector(s);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+    const wrap = d => ((d + 180) % 360 + 360) % 360 - 180;
+    const D2R = Math.PI / 180;
+
+    const orbit = $('#orbit'), scene = $('#scene'), ring = $('#ring');
+    const intro = $('#intro'), caption = $('#caption'), header = $('#top');
+    const N = MISSIONS.length, STEP = 360 / N;
+    ring.style.setProperty('--step', STEP + 'deg');
+
+    // Build ring tiles
+    const tiles = MISSIONS.map((m, i) => {
+      const a = document.createElement('a');
+      a.className = 'tile';
+      a.href = m.href;
+      a.style.setProperty('--i', i);
+      a.setAttribute('aria-label', `${m.title}, ${m.when}. Mission ${i + 1} of ${N}`);
+      a.innerHTML =
+        `<span class="tile-face tile-front"><span class="tile-photo">${ILLUS[m.illus] ? ILLUS[m.illus]() : ''}` +
+        (m.img ? `<img src="${m.img}" alt="" onerror="this.remove()">` : '') +
+        `</span><span class="tile-label"><span class="tile-title">${m.short}</span><span class="tile-when">${m.year}</span></span></span>` +
+        `<span class="tile-face tile-back" aria-hidden="true">${i + 1}</span>`;
+      ring.appendChild(a);
+      return a;
+    });
+
+    // Scroll geometry: an intro hold, then one "stop" per mission
+    const INTRO = 0.8, TAIL = 0.5, UNIT_VH = 50;
+    const TOTAL = INTRO + (N - 1) + TAIL;
+    orbit.style.height = `calc(100vh + ${TOTAL * UNIT_VH}vh)`;
+    const range = () => orbit.offsetHeight - innerHeight;
+    const scrollS = () => clamp(-orbit.getBoundingClientRect().top / range(), 0, 1) * TOTAL;
+    const idxFromS = s => {
+      const u = s - INTRO;
+      if (u <= 0) return 0;
+      const f = Math.floor(u);
+      return Math.min(N - 1, f + smooth(.2, .8, u - f));
+    };
+    const goTo = k => {
+      k = clamp(k, 0, N - 1);
+      const y = orbit.offsetTop + ((INTRO + k) / TOTAL) * range();
+      scrollTo({ top: Math.round(y), behavior: reduce ? 'auto' : 'smooth' });
+    };
+
+    tiles.forEach((t, i) => {
+      t.addEventListener('click', e => { if (i !== front) { e.preventDefault(); goTo(i); } });
+      t.addEventListener('focus', () => { if (t.matches(':focus-visible')) goTo(i); });
+    });
+    $('#prevBtn').addEventListener('click', () => goTo(front - 1));
+    $('#nextBtn').addEventListener('click', () => goTo(front + 1));
+
+    /* ---------- Layout ---------- */
+    const lay = { cx: 0, cy: 0, k: 1, S: 92, tilt: -18, ringY: 30 };
+    function layout(){
+      const W = innerWidth, H = innerHeight, mobile = W < 820;
+      const R = mobile ? 300 : 350, TW = mobile ? 210 : 230, TH = Math.round(TW * .73), S = mobile ? 84 : 92;
+      let cx, cy, k;
+      if (mobile) {
+        // Let the side tiles bleed off the edges so the front tile stays readable
+        cx = W / 2; cy = H * .31;
+        k = Math.min(W / (2 * R) * .9, (H * .46) / (R * 1.05));
+      } else {
+        const left = parseFloat(getComputedStyle(document.querySelector('.copy')).width) + Math.min(W * .05, 56) + 36;
+        cx = left + (W - left) / 2; cy = H * .43;
+        k = Math.min((W - left - 24) / (2 * (R + TW * .55)), H / 760, 1.1);
+      }
+      const tilt = mobile ? -20 : -18;
+      Object.assign(lay, { cx, cy, k, S, tilt, ringY: Math.round(S * .38) });
+      const st = scene.style;
+      st.setProperty('--cx', cx + 'px'); st.setProperty('--cy', cy + 'px');
+      st.setProperty('--k', k.toFixed(4)); st.setProperty('--tilt', tilt + 'deg');
+      st.setProperty('--R', R + 'px'); st.setProperty('--TW', TW + 'px'); st.setProperty('--TH', TH + 'px');
+      st.setProperty('--S', S + 'px'); st.setProperty('--s', Math.round(S * .26) + 'px');
+
+      // Deputy's passive relative orbit: a 2:1 ellipse (along-track twice radial)
+      const Ar = S * 1.05, At = 2 * Ar, C = S * 1.2;
+      const len = Math.hypot(At, C);
+      Object.assign(dep, { Ar, At, C });
+      const ro = $('#relOrbit').style;
+      ro.width = 2 * len + 'px'; ro.height = 2 * Ar + 'px';
+      ro.left = -len + 'px'; ro.top = -Ar + 'px';
+      ro.transform = `rotateY(${-Math.atan2(C, At)}rad)`;
+      drawStars();
     }
 
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+    function drawStars(){
+      const c = $('#stars'), dpr = Math.min(2, devicePixelRatio || 1);
+      const w = c.clientWidth, h = c.clientHeight;
+      c.width = w * dpr; c.height = h * dpr;
+      const g = c.getContext('2d'); g.scale(dpr, dpr);
+      let seed = 11;
+      const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      const n = Math.round(w * h / 4200);
+      for (let i = 0; i < n; i++) {
+        const x = rnd() * w, y = rnd() * h, r = rnd() ** 3 * 1.3 + .3, a = .2 + rnd() * .6;
+        g.fillStyle = rnd() < .12 ? `rgba(255,214,150,${a})` : `rgba(220,230,255,${a})`;
+        g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+      }
+    }
+
+    /* ---------- Attitude control ----------
+       Each axis is a second-order loop: torque = Kp*error - Kd*rate,
+       clipped to a reaction-wheel torque limit. Slightly underdamped,
+       so you can see a small overshoot after each slew. */
+    const sat = $('#sat'), deputy = $('#deputy');
+    const faces = [...sat.querySelectorAll('[data-n]')].map(el => ({ el, n: el.dataset.n.split(',').map(Number) }));
+    const wingPx = sat.querySelector('[data-wing="px"]'), wingNx = sat.querySelector('[data-wing="nx"]');
+    const hingePx = $('#hingePx'), hingeNx = $('#hingeNx'), boom = $('#boom');
+    const WN = 3.0, ZETA = .55, KP = WN * WN, KD = 2 * ZETA * WN, AMAX = 7;
+    const att = { y: -.55, p: .28, r: .12, wy: 0, wp: 0, wr: 0 };
+    const tgt = { y: 0, p: 0, r: 0 };
+    const dep = { Ar: 96, At: 192, C: 110 };
+    const LIGHT = (() => { const v = [-.5, -.7, .62], m = Math.hypot(...v); return v.map(x => x / m); })();
+    let pointer = null, lastMove = -1e9, mode = 'Deploying solar arrays';
+
+    const setPointer = (x, y) => { pointer = { x, y }; lastMove = performance.now(); };
+    addEventListener('pointermove', e => setPointer(e.clientX, e.clientY), { passive: true });
+    addEventListener('touchmove', e => { const t = e.touches[0]; if (t) setPointer(t.clientX, t.clientY); }, { passive: true });
+    if (matchMedia('(hover: none)').matches) $('#hudHint').textContent = 'Drag a finger across the sky and the satellite tracks it.';
+
+    // Rotation matrix for rotateY(y) rotateX(p) rotateZ(r) in CSS axes (y down, z toward viewer)
+    function rot(y, p, r){
+      const cy = Math.cos(y), sy = Math.sin(y), cp = Math.cos(p), sp = Math.sin(p), cr = Math.cos(r), sr = Math.sin(r);
+      const Ry = [[cy,0,sy],[0,1,0],[-sy,0,cy]], Rx = [[1,0,0],[0,cp,-sp],[0,sp,cp]], Rz = [[cr,-sr,0],[sr,cr,0],[0,0,1]];
+      const mul = (A, B) => A.map(row => B[0].map((_, j) => row.reduce((s, v, k) => s + v * B[k][j], 0)));
+      return mul(mul(Ry, Rx), Rz);
+    }
+    const apply = (M, v) => M.map(row => row[0] * v[0] + row[1] * v[1] + row[2] * v[2]);
+    const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    const shade = n => (.42 + .78 * Math.max(0, dot(n, LIGHT))).toFixed(3);
+    const quat = (y, p, r) => {
+      const q = (w, x, yy, z) => [w, x, yy, z];
+      const m = (a, b) => [
+        a[0]*b[0] - a[1]*b[1] - a[2]*b[2] - a[3]*b[3],
+        a[0]*b[1] + a[1]*b[0] + a[2]*b[3] - a[3]*b[2],
+        a[0]*b[2] - a[1]*b[3] + a[2]*b[0] + a[3]*b[1],
+        a[0]*b[3] + a[1]*b[2] - a[2]*b[1] + a[3]*b[0]];
+      return m(m(q(Math.cos(y/2), 0, Math.sin(y/2), 0), q(Math.cos(p/2), Math.sin(p/2), 0, 0)), q(Math.cos(r/2), 0, 0, Math.sin(r/2)));
+    };
+    // Four wheels in a pyramid, 54.74 deg from the body z axis
+    const WHEEL_AX = [45, 135, 225, 315].map(a => [.8165 * Math.cos(a * D2R), .8165 * Math.sin(a * D2R), .5774]);
+    const wheelEls = [...document.querySelectorAll('#hudWheels i')];
+
+    // Deployment: underdamped step, like a tape-spring hinge snapping open
+    const deployCurve = t => t <= 0 ? 0 : 1 - Math.exp(-5 * t) * (Math.cos(10 * t) + .5 * Math.sin(10 * t));
+
+    function updateSat(dt, tl, now){
+      const deploying = !reduce && tl < 2.3;
+      if (deploying) {
+        const d = deployCurve(tl - .5);
+        hingePx.style.setProperty('--w-px', (-90 * (1 - d)).toFixed(2) + 'deg');
+        hingeNx.style.setProperty('--w-nx', (90 * (1 - d)).toFixed(2) + 'deg');
+        boom.style.setProperty('--boom', smooth(1.4, 2.2, tl).toFixed(3));
+        mode = tl < 1.4 ? 'Deploying solar arrays' : 'Extending boom';
+        tgt.y = att.y; tgt.p = att.p; tgt.r = att.r;
+      } else {
+        hingePx.style.setProperty('--w-px', '0deg');
+        hingeNx.style.setProperty('--w-nx', '0deg');
+        boom.style.setProperty('--boom', '1');
+        if (pointer && now - lastMove < 6000) {
+          const D = 420 * lay.k + 120;
+          const dx = pointer.x - lay.cx, dy = pointer.y - lay.cy;
+          tgt.y = clamp(Math.atan2(dx, D), -1.25, 1.25);
+          tgt.p = clamp(Math.atan2(-dy, Math.hypot(dx, D)), -1, 1);
+          tgt.r = -.22 * tgt.y;
+          mode = 'Tracking your pointer';
+        } else if (!reduce) {
+          tgt.y = .6 * Math.sin(tl * .21);
+          tgt.p = .2 + .18 * Math.sin(tl * .33 + 1);
+          tgt.r = .1 * Math.sin(tl * .17);
+          mode = 'Scanning';
+        } else {
+          tgt.y = -.55; tgt.p = .28; tgt.r = .12; mode = 'Holding attitude';
         }
-      });
-    }, { threshold: 0.1 });
+      }
+      if (reduce && !pointer) { att.y = tgt.y; att.p = tgt.p; att.r = tgt.r; }
+      else {
+        const steps = Math.ceil(dt / .008), h = dt / steps;
+        for (let s = 0; s < steps; s++) {
+          for (const [x, w, T] of [['y','wy','y'], ['p','wp','p'], ['r','wr','r']]) {
+            const a = clamp(KP * (tgt[T] - att[x]) - KD * att[w], -AMAX, AMAX);
+            att[w] += a * h; att[x] += att[w] * h;
+          }
+        }
+      }
+      sat.style.transform = `rotateX(${-lay.tilt}deg) rotateY(${att.y}rad) rotateX(${att.p}rad) rotateZ(${att.r}rad)`;
 
-    reveals.forEach(el => observer.observe(el));
+      // Simple Lambert shading per face so the cube reads as a solid
+      const M = rot(att.y, att.p, att.r);
+      faces.forEach(f => f.el.style.setProperty('--b', shade(apply(M, f.n))));
+      const wa = parseFloat(hingePx.style.getPropertyValue('--w-px')) * D2R || 0;
+      const wn = apply(M, [Math.sin(wa), 0, Math.cos(wa)]);
+      const wsh = (.42 + .78 * Math.abs(dot(wn, LIGHT))).toFixed(3);
+      wingPx.style.setProperty('--b', wsh); wingNx.style.setProperty('--b', wsh);
 
-    document.querySelectorAll('.more-toggle').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-target');
-        const target = document.getElementById(id);
-        if (!target) return;
-        const isOpen = target.style.display === 'block';
-        target.style.display = isOpen ? 'none' : 'block';
-        btn.textContent = isOpen ? 'More details' : 'Hide details';
+      // Deputy on its relative orbit
+      const th = reduce ? 1.1 : tl * (2 * Math.PI / 16);
+      const x = dep.At * Math.sin(th), yy = -dep.Ar * Math.cos(th), z = dep.C * Math.sin(th);
+      deputy.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, ${z.toFixed(1)}px) rotateY(${reduce ? 30 : (tl * 25) % 360}deg) rotateX(18deg)`;
+    }
+
+    let hudT = 0;
+    const hudMode = $('#hudMode'), hudErr = $('#hudErr'), hudRate = $('#hudRate'), hudQ = $('#hudQ');
+    const fmt = v => (v < 0 ? '−' : '+') + Math.abs(v).toFixed(3);
+    function updateHud(now){
+      if (now - hudT < 90) return;
+      hudT = now;
+      const b = [Math.cos(att.p) * Math.sin(att.y), -Math.sin(att.p), Math.cos(att.p) * Math.cos(att.y)];
+      const t = [Math.cos(tgt.p) * Math.sin(tgt.y), -Math.sin(tgt.p), Math.cos(tgt.p) * Math.cos(tgt.y)];
+      const err = Math.acos(clamp(dot(b, t), -1, 1)) / D2R;
+      const rate = Math.hypot(att.wy, att.wp, att.wr) / D2R;
+      hudMode.textContent = mode;
+      hudErr.textContent = err.toFixed(2) + '°';
+      hudRate.textContent = rate.toFixed(2) + '°/s';
+      hudQ.textContent = quat(att.y, att.p, att.r).map(fmt).join(' ');
+      const omega = [att.wp, att.wy, att.wr];
+      WHEEL_AX.forEach((ax, i) => {
+        const rpm = 1200 - .75 * dot(ax, omega) * 3200;
+        const f = clamp(rpm / 6000, -1, 1);
+        wheelEls[i].style.setProperty('--w', (Math.abs(f) * 50).toFixed(1) + '%');
+        wheelEls[i].style.setProperty('--x', f < 0 ? '-100%' : '0');
       });
+    }
+
+    /* ---------- Caption ---------- */
+    let front = -1;
+    const capEls = ['capIndex','capWhen','capWhere','capTitle','capOrg','capLine','capLink'].reduce((o, id) => (o[id] = $('#' + id), o), {});
+    const prevBtn = $('#prevBtn'), nextBtn = $('#nextBtn');
+    function setFront(i){
+      if (i === front) return;
+      if (front >= 0) tiles[front].classList.remove('is-front');
+      front = i;
+      tiles[i].classList.add('is-front');
+      const m = MISSIONS[i];
+      capEls.capIndex.textContent = `${i + 1} / ${N}`;
+      capEls.capWhen.textContent = m.when;
+      capEls.capWhere.textContent = m.where;
+      capEls.capTitle.textContent = m.title;
+      capEls.capOrg.textContent = m.org;
+      capEls.capLine.textContent = m.line;
+      capEls.capLink.textContent = m.cta;
+      capEls.capLink.href = m.href;
+      prevBtn.disabled = i === 0;
+      nextBtn.disabled = i === N - 1;
+      caption.classList.remove('flash'); void caption.offsetWidth; caption.classList.add('flash');
+    }
+
+    /* ---------- Main loop ---------- */
+    let cur = 0, prevCur = 0, last = performance.now(), t0 = last, running = false, introShown = true;
+    function frame(now){
+      if (!running) return;
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      const tl = (now - t0) / 1000;
+      const s = scrollS();
+      const target = idxFromS(s);
+      cur = reduce ? target : cur + (target - cur) * (1 - Math.exp(-dt * 7));
+      const vel = (cur - prevCur) / Math.max(dt, 1e-3); prevCur = cur;
+      const spinIn = reduce ? 0 : 150 * (1 - smooth(0, 1, tl / 1.9));
+      const angle = -cur * STEP + spinIn;
+      ring.style.transform = `translateY(${lay.ringY}px) rotateY(${angle.toFixed(3)}deg)`;
+      ring.style.setProperty('--skew', (reduce ? 0 : clamp(vel * 2.6, -6, 6)).toFixed(2) + 'deg');
+
+      let best = 1e9, bi = 0;
+      tiles.forEach((t, i) => {
+        const rel = wrap(i * STEP + angle);
+        const c = (1 + Math.cos(rel * D2R)) / 2;
+        t.style.setProperty('--lit', (.28 + .72 * c ** 1.6).toFixed(3));
+        if (Math.abs(rel) < best) { best = Math.abs(rel); bi = i; }
+      });
+      setFront(bi);
+
+      const ia = 1 - smooth(.3, .7, s), ca = smooth(.5, .8, s);
+      intro.style.opacity = ia.toFixed(3);
+      caption.style.opacity = ca.toFixed(3);
+      if ((ia > .5) !== introShown) {
+        introShown = ia > .5;
+        intro.inert = !introShown; caption.inert = introShown;
+      }
+      header.classList.toggle('show-name', !introShown);
+
+      updateSat(dt, tl, now);
+      updateHud(now);
+      requestAnimationFrame(frame);
+    }
+    caption.inert = true;
+
+    function start(){ if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
+    function stop(){ running = false; }
+    new IntersectionObserver(([e]) => e.isIntersecting ? start() : stop()).observe(orbit);
+
+    const onScroll = () => {
+      const past = orbit.getBoundingClientRect().bottom < 120;
+      header.classList.toggle('is-solid', past);
+      if (past) header.classList.add('show-name');
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', () => { layout(); onScroll(); });
+
+    layout(); onScroll();
+    if (reduce) { hingePx.style.setProperty('--w-px', '0deg'); boom.style.setProperty('--boom', '1'); }
+    else { hingePx.style.setProperty('--w-px', '-90deg'); hingeNx.style.setProperty('--w-nx', '90deg'); boom.style.setProperty('--boom', '0'); }
+    requestAnimationFrame(() => document.body.classList.remove('is-loading'));
+    start();
+
+    /* =========================================================
+       Background map: land dots shaded by today's real day/night line,
+       a sun-synchronous ground track, and the places I've worked.
+       ========================================================= */
+    const LAND = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABf/D//gAAAAAAAAAAAAAAAAAAAAAAB///////AAHgBv4AHgAAAAAAAAAAAHd//////4AB/gAAAAD+AAAAAAAAAAD/f/4////4AAfAAAMAAf4AAAAAAAAAH///4A///8AAAAAHwAf/4Af8AAAAAAH///+AP//wAAAAAOD////+HgAAgH8AL/73/wP//gQAB8AfH///////wBw//////9/4P//AAAf/y///////////+f//////3+H/wmAA//////////////+///////n+H/A+AB+/////////////Df/////798D8AYAP//////////////E//////wP0B4AAAP////////////v4AH4P///wH+AAAAOP9//////////+eAADwD///8P/AAAAOD//////////8A8AAOAB////v/gAAAfDv/////////4B5AMgAB//////wAAAfv///////////AwAAAAAP/////wAAAX////////////BgAAAAAH////+8AAAD////////////AAAAAAAH/////8AAAD///////////9AAAAAAAD/////AAAAB//7////////5YAAAAAAH////kAAAAf//4f///////zgAAAAAAH////gAAAAfy/////////+CAAAAAAAD///+AAAAAfSLf///////+GAAAAAAAB///+AAAAAf/z////////2OAAAAAAAB///8AAAAAP/Ai///////H+AAAAAAAAf//4AAAAAf/zB///////hwAAAAAAAAf//wAAAAAf//////////hAAAAAAAAAP/4wAAAAB///////////gAAAAAAAAAP/AwAAAAB/////v/////gAAAAAAAAAD/AQAAAAD/////3/////gAAAAAAAAAC+B4AAAAH//////D///+gAAAAAAAAAAfOvAAAAH//////D/7/wAAAAAAAgAAAf+H8AAAH////v+A/h+wgAAAAAAAAAAH8AAAAAH////38A/B/AwAgAAAAAAAAAfgAAABn/////wAcAfggAAAAAAAAAAAHggAAAH/////IAcAfg4AAAAAAAAAAADj/AAAD/////wAcAXgYAAAAAAAAAAAB//gAAB/////wAOATCcAAAAAAAAAAAAX/wAAB/////gACAYCcAAAAAAAAAAAAH/8AAAfP///gAABsHAAAAAAAAAAAAAP/+AAAAD///AAAA8eCAAAAAAAAAAAAP/+AAAAD//+AAAA8/+AAAAAAAAAAAAf//wAAAD//8AAAAe/14AAAAAAAAAAAf//+AAAD//4AAAAPfn/AAAAAAAAAAAf///gAAB//wAAAAGBw//AAAAAAAAAAf///gAAA//wAAAAB4AXxgAAAAAAAAAP///gAAA//wAAAAAP8HY4AAAAAAAAAH///AAAA//4AAAAAABhEIAEAAAAAAAH//+AAAA//4gAAAAAB7AAAAAAAAAAAD//+AAAA//5wAAAAAP7gBAAAAAAAAAB//+AAAA//zgAAAAAf/gBjAAAAAAAAA//8AAAA//jgAAAAA//wABAAAAAAAAAf/8AAAA//HmAAAAH//4CAAAAAAAAAA//4AAAAf/HAAAAAP//8AAAAAAQAAAA//gAAAAf/DAAAAAP//+AAAAAAAAAAA//AAAAAf+AAAAAAH//+AAAAAAAAAAA//AAAAAP+AAAAAAH//+AAAAAAAAAAA/+AAAAAP8AAAAAAH//+AAAAAAAAAAA/8AAAAAH4AAAAAAH4f+AAAAAAAAAAB/4AAAAAGAAAAAAAHAf8AMAAAAAAAAB/wAAAAAAAAAAAAAAAD4AFAAAAAAAAB/gAAAAAAAAAAAAAAABwAGAAAAAAAAB+AAAAAAAAAAAAAAAAA4AOAAAAAAAAB+AAAAAAAAAAAAAAAAAwA4AAAAAAAAD8AAAAAAAAAAAAAAAAAABwAAAAAAAAD4AAAAAAAAAAAAAAAAAAAgAAAAAAAAD4AAAAAAAAAACAAAAAAAAAAAAAAAAADwgAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAHwAAAAAAAAAAAAIAAAAAAAAAAAAAAAeAAAAAAAAB/4B/////gEAAAAAAAAAB+AAAAAAAD//+P//////wAAAAAAAAAH/AAAA///////////////wAAAAMAf/f/AAAH///////////////gAAB///////AAAf//////////////+AAD///////wAA////////////////9gAO//////84D4////////////////+AAAf///////H3////////////////4AG////////////////////////////w//////////////////////////////////////////////////////////////////////////////////////////';
+    const landBits = Uint8Array.from(atob(LAND), c => c.charCodeAt(0));
+    const PLACES = {
+      quezon:     { name: 'Quezon City', lat: 14.65, lon: 121.07 },
+      taipei:     { name: 'Taipei',      lat: 25.03, lon: 121.56 },
+      tainan:     { name: 'Tainan',      lat: 22.99, lon: 120.21 },
+      tokyo:      { name: 'Tokyo',       lat: 35.60, lon: 139.68 },
+      utsunomiya: { name: 'Utsunomiya',  lat: 36.56, lon: 139.88 },
+      antalya:    { name: 'Antalya',     lat: 36.90, lon: 30.70 },
+    };
+    const mapEl = $('#map'), mctx = mapEl.getContext('2d');
+    const base = document.createElement('canvas'), bctx = base.getContext('2d');
+    const mp = { W: 0, H: 0, dpr: 1, sp: 10, lonC: 96, latC: 12 };
+    const proj = (lat, lon) => [mp.W / 2 + wrap(lon - mp.lonC) / 2 * mp.sp, mp.H / 2 - (lat - mp.latC) / 2 * mp.sp];
+
+    function sunPos(t){
+      const d = new Date(t), N = (t - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5;
+      const decl = -23.44 * Math.cos(2 * Math.PI / 365 * (N + 10));
+      return { lat: decl, lon: (12 - d.getUTCHours() - d.getUTCMinutes() / 60) * 15 };
+    }
+
+    function drawBase(){
+      const { W, H, dpr, sp } = mp;
+      base.width = W * dpr; base.height = H * dpr;
+      bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      bctx.clearRect(0, 0, W, H);
+      bctx.lineWidth = 1;
+      for (let lat = -75; lat <= 75; lat += 15) {
+        const y = proj(lat, mp.lonC)[1];
+        bctx.strokeStyle = lat === 0 ? 'rgba(116,196,255,.10)' : 'rgba(188,195,207,.05)';
+        bctx.beginPath(); bctx.moveTo(0, y); bctx.lineTo(W, y); bctx.stroke();
+      }
+      bctx.strokeStyle = 'rgba(188,195,207,.05)';
+      for (let lon = -180; lon < 180; lon += 15) {
+        const x = proj(0, lon)[0];
+        if (x < 0 || x > W) continue;
+        bctx.beginPath(); bctx.moveTo(x, proj(90, lon)[1]); bctx.lineTo(x, proj(-90, lon)[1]); bctx.stroke();
+      }
+      const sun = sunPos(Date.now()), sd = sun.lat * D2R, r = Math.max(1, sp * .14);
+      for (let row = 0; row < 90; row++) {
+        const lat = 89 - 2 * row, la = lat * D2R;
+        const y = proj(lat, 0)[1];
+        if (y < -4 || y > H + 4) continue;
+        for (let c = 0; c < 180; c++) {
+          const i = row * 180 + c;
+          if (!((landBits[i >> 3] >> (7 - (i & 7))) & 1)) continue;
+          const lon = -179 + 2 * c, x = proj(lat, lon)[0];
+          if (x < -4 || x > W + 4) continue;
+          const cz = Math.sin(la) * Math.sin(sd) + Math.cos(la) * Math.cos(sd) * Math.cos((lon - sun.lon) * D2R);
+          const day = smooth(-.1, .1, cz);
+          bctx.fillStyle = `rgba(${Math.round(120 + 100 * day)},${Math.round(138 + 86 * day)},${Math.round(188 + 52 * day)},${(.15 + .18 * day).toFixed(3)})`;
+          bctx.beginPath(); bctx.arc(x, y, r, 0, Math.PI * 2); bctx.fill();
+        }
+      }
+    }
+
+    function mapLayout(){
+      const W = innerWidth, H = innerHeight, mobile = W < 820;
+      Object.assign(mp, {
+        W, H, dpr: Math.min(2, devicePixelRatio || 1),
+        sp: Math.max(W / 175, H / 80),
+        lonC: mobile ? 126 : 96, latC: mobile ? 20 : 12,
+      });
+      mapEl.width = W * mp.dpr; mapEl.height = H * mp.dpr;
+      drawBase();
+    }
+
+    // Sun-synchronous orbit (97.4 deg inclination). One animated orbit every 48 s,
+    // with the Earth turning about 24 deg underneath per orbit.
+    const INC = 97.4 * D2R, TORB = 48, LON0 = 112, FOOT = 12;
+    const subsat = t => {
+      const u = 2 * Math.PI * t / TORB;
+      return [Math.asin(Math.sin(INC) * Math.sin(u)) / D2R,
+              LON0 + Math.atan2(Math.cos(INC) * Math.sin(u), Math.cos(u)) / D2R - 24 * t / TORB];
+    };
+    const angDist = (a, b) => {
+      const p1 = a[0] * D2R, p2 = b[0] * D2R, dl = (a[1] - b[1]) * D2R;
+      return Math.acos(clamp(Math.sin(p1) * Math.sin(p2) + Math.cos(p1) * Math.cos(p2) * Math.cos(dl), -1, 1)) / D2R;
+    };
+    const trackPts = (t0, t1, n) => Array.from({ length: n + 1 }, (_, k) => { const s = subsat(t0 + (t1 - t0) * k / n); return proj(s[0], s[1]); });
+    function strokePts(pts, from, to){
+      mctx.beginPath();
+      for (let k = from; k <= to && k < pts.length; k++) {
+        const [x, y] = pts[k];
+        if (k === from || Math.abs(x - pts[k - 1][0]) > mp.W * .5) mctx.moveTo(x, y); else mctx.lineTo(x, y);
+      }
+      mctx.stroke();
+    }
+
+    let activePlaces = new Set();
+    const mapT0 = performance.now();
+    function drawMap(now){
+      const { W, H, dpr } = mp;
+      mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      mctx.clearRect(0, 0, W, H);
+      mctx.drawImage(base, 0, 0, W, H);
+      const t = reduce ? TORB * .3 : (now - mapT0) / 1000;
+
+      // Ground track: the last orbit fades with age, the next stretch is dashed
+      const past = trackPts(t - TORB * 1.15, t, 230);
+      mctx.lineWidth = 1.4;
+      for (let s = 0; s < 10; s++) {
+        mctx.strokeStyle = `rgba(116,196,255,${(.04 + .34 * (s / 9) ** 1.6).toFixed(3)})`;
+        strokePts(past, s * 23, (s + 1) * 23);
+      }
+      mctx.setLineDash([3, 6]); mctx.strokeStyle = 'rgba(116,196,255,.22)';
+      strokePts(trackPts(t, t + TORB * .4, 80), 0, 80);
+      mctx.setLineDash([]);
+
+      // Satellite with its coverage footprint
+      const ss = subsat(t), [sx, sy] = proj(ss[0], ss[1]);
+      const ry = FOOT / 2 * mp.sp, rx = Math.min(ry / Math.max(Math.cos(ss[0] * D2R), .25), ry * 1.8);
+      mctx.fillStyle = 'rgba(116,196,255,.035)'; mctx.strokeStyle = 'rgba(116,196,255,.22)'; mctx.lineWidth = 1;
+      mctx.beginPath(); mctx.ellipse(sx, sy, rx, ry, 0, 0, Math.PI * 2); mctx.fill(); mctx.stroke();
+      const glow = mctx.createRadialGradient(sx, sy, 0, sx, sy, 13);
+      glow.addColorStop(0, 'rgba(227,164,58,.55)'); glow.addColorStop(1, 'rgba(227,164,58,0)');
+      mctx.fillStyle = glow; mctx.beginPath(); mctx.arc(sx, sy, 13, 0, Math.PI * 2); mctx.fill();
+      mctx.fillStyle = '#E3A43A'; mctx.beginPath(); mctx.arc(sx, sy, 3, 0, Math.PI * 2); mctx.fill();
+
+      // Places: a quiet dot, pulsing while its entry is on screen or the satellite passes over
+      const pulse = reduce ? .5 : ((now / 1000) % 2.2) / 2.2;
+      for (const [key, p] of Object.entries(PLACES)) {
+        const [x, y] = proj(p.lat, p.lon);
+        if (x < -20 || x > W + 20 || y < -20 || y > H + 20) continue;
+        const on = activePlaces.has(key) || activePlaces.has('all');
+        const lit = on || angDist([p.lat, p.lon], ss) < FOOT;
+        if (on && !reduce) {
+          mctx.strokeStyle = `rgba(227,164,58,${(.45 * (1 - pulse)).toFixed(3)})`; mctx.lineWidth = 1;
+          mctx.beginPath(); mctx.arc(x, y, 3 + 10 * pulse, 0, Math.PI * 2); mctx.stroke();
+        }
+        mctx.fillStyle = lit ? 'rgba(227,164,58,.85)' : 'rgba(227,164,58,.35)';
+        mctx.beginPath(); mctx.arc(x, y, lit ? 2.6 : 2, 0, Math.PI * 2); mctx.fill();
+      }
+    }
+
+    let mapOn = false, mapLast = 0;
+    function mapLoop(now){
+      if (!mapOn) return;
+      if (now - mapLast > (reduce ? 400 : 33)) { mapLast = now; drawMap(now); }
+      requestAnimationFrame(mapLoop);
+    }
+    function mapVisibility(){
+      const o = clamp(1 - orbit.getBoundingClientRect().bottom / innerHeight, 0, 1);
+      mapEl.style.opacity = o.toFixed(3);
+      const want = o > 0 && !document.hidden;
+      if (want && !mapOn) { mapOn = true; requestAnimationFrame(mapLoop); }
+      if (!want) mapOn = false;
+    }
+    addEventListener('scroll', mapVisibility, { passive: true });
+    document.addEventListener('visibilitychange', mapVisibility);
+    addEventListener('resize', () => { mapLayout(); mapVisibility(); });
+    setInterval(drawBase, 5 * 60 * 1000); // keep the day/night line current
+
+    // Highlight the place(s) for whatever entry sits in the middle of the screen
+    const inBand = new Set();
+    const placeIO = new IntersectionObserver(entries => {
+      entries.forEach(e => e.isIntersecting ? inBand.add(e.target) : inBand.delete(e.target));
+      activePlaces = new Set([...inBand].flatMap(el => el.dataset.place.split(' ')));
+    }, { rootMargin: '-42% 0px -42% 0px' });
+    document.querySelectorAll('[data-place]').forEach(el => placeIO.observe(el));
+    mapLayout(); mapVisibility();
+
+    /* ---------- Photo log: hide empty slots once any photo exists ---------- */
+    const photoLog = $('#photoLog');
+    if (photoLog) {
+      const shots = [...photoLog.querySelectorAll('.shot')];
+      let pending = shots.length, loaded = 0;
+      const settle = () => {
+        if (--pending) return;
+        photoLog.classList.toggle('is-empty', loaded === 0);
+        $('#logStrip').scrollLeft = 0;
+      };
+      shots.forEach(s => {
+        const img = s.querySelector('img');
+        const ok = () => { loaded++; settle(); };
+        const bad = () => { s.classList.add('is-missing'); img.remove(); settle(); };
+        if (img.complete) (img.naturalWidth ? ok : bad)();
+        else { img.addEventListener('load', ok, { once: true }); img.addEventListener('error', bad, { once: true }); }
+      });
+      const strip = $('#logStrip'), logNav = photoLog.querySelector('.log-nav');
+      photoLog.querySelectorAll('[data-dir]').forEach(b => b.addEventListener('click', () =>
+        strip.scrollBy({ left: +b.dataset.dir * strip.clientWidth * .8, behavior: reduce ? 'auto' : 'smooth' })));
+      // Only show the arrows when there are more photos than fit
+      const navCheck = () => { logNav.hidden = strip.scrollWidth <= strip.clientWidth + 4; };
+      new ResizeObserver(navCheck).observe(strip);
+      new MutationObserver(navCheck).observe(photoLog, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    }
+
+    /* ---------- Photo viewer ---------- */
+    const lb = $('#lightbox'), lbImg = $('#lbImg'), lbCap = $('#lbCap');
+    const ZOOM = '.photo img, .shot img, .portrait-frame img';
+    const capOf = img => (img.closest('figure')?.querySelector('figcaption')?.textContent || img.alt || '').trim();
+    let lbList = [], lbIdx = 0;
+    const lbShow = i => {
+      lbIdx = (i + lbList.length) % lbList.length;
+      const img = lbList[lbIdx];
+      lbImg.src = img.currentSrc || img.src; lbImg.alt = img.alt; lbCap.textContent = capOf(img);
+    };
+    document.addEventListener('click', e => {
+      const img = e.target.closest && e.target.closest(ZOOM);
+      if (!img || !img.naturalWidth) return;
+      lbList = [...document.querySelectorAll(ZOOM)].filter(i => i.naturalWidth);
+      lb.classList.toggle('single', lbList.length < 2);
+      lbShow(lbList.indexOf(img));
+      lb.showModal();
     });
-  </script>
+    lb.querySelector('.lb-close').addEventListener('click', () => lb.close());
+    lb.querySelector('.lb-prev').addEventListener('click', () => lbShow(lbIdx - 1));
+    lb.querySelector('.lb-next').addEventListener('click', () => lbShow(lbIdx + 1));
+    lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
+    lb.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') lbShow(lbIdx - 1);
+      if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+    });
 
+    /* ---------- Arrow keys rotate the ring while it fills the screen ---------- */
+    addEventListener('keydown', e => {
+      if (e.altKey || e.ctrlKey || e.metaKey || lb.open) return;
+      if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable], .log-strip')) return;
+      const r = orbit.getBoundingClientRect();
+      if (r.top > 1 || r.bottom < innerHeight - 1) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(introShown ? 0 : front + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(front - 1); }
+    });
+
+    /* ---------- Contact: local time and copy email ---------- */
+    const lt = $('#localTime');
+    if (lt) {
+      const tf = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' });
+      const tick = () => { lt.textContent = tf.format(new Date()); };
+      tick(); setInterval(tick, 15000);
+    }
+    const ce = $('#copyEmail');
+    if (ce) ce.addEventListener('click', async () => {
+      const email = ce.dataset.email;
+      try { await navigator.clipboard.writeText(email); }
+      catch { location.href = 'mailto:' + email; return; }
+      ce.textContent = 'Copied'; ce.classList.add('is-done');
+      setTimeout(() => { ce.textContent = 'Copy email'; ce.classList.remove('is-done'); }, 2000);
+    });
+  })();
+  </script>
 </body>
 </html>
