@@ -57,7 +57,7 @@
       border-bottom:1px solid transparent;
       transition:background-color .3s, border-color .3s;
     }
-    .top.is-solid{background:rgba(11,16,38,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+    .top.is-solid{background:rgba(10,13,22,.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
     .top-name{font-stretch:var(--wide);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap;opacity:0;transition:opacity .3s}
     .top.show-name .top-name{opacity:1}
     .top-nav{display:flex;gap:clamp(14px, 2.4vw, 32px);font-size:15px}
@@ -69,7 +69,9 @@
     .orbit-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--space)}
 
     /* Live map behind the content: land dots with today's day/night line and a moving ground track */
-    .map{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;opacity:0}
+    .map{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;background:#0A0D16}
+    /* Fades the bottom of the hero into the page colour so there is no hard edge */
+    .hero-fade{position:absolute;left:0;right:0;bottom:0;height:12vh;background:linear-gradient(rgba(10,13,22,0), #0A0D16 94%);pointer-events:none}
     .stars{position:absolute;inset:0;width:100%;height:100%;display:block}
 
     .earth{
@@ -96,7 +98,7 @@
       left:calc(var(--TW) / -2);top:calc(var(--TH) / -2);
       width:var(--TW);height:var(--TH);
       transform-style:preserve-3d;
-      transform:rotateY(calc(var(--i) * var(--step))) translateZ(var(--R));
+      transform:rotateY(calc(var(--i) * var(--step))) translateZ(var(--R)) rotateY(var(--face, 0deg));
       color:var(--ink);text-decoration:none;cursor:pointer;
     }
     .tile:focus-visible{outline:none}
@@ -279,7 +281,7 @@
 
     /* ---------- Content ---------- */
     main{position:relative;padding-bottom:40px}
-    main::before{content:"";position:absolute;left:0;right:0;top:0;height:96px;background:linear-gradient(var(--space), rgba(11,16,38,0));pointer-events:none}
+    main::before{content:"";position:absolute;left:0;right:0;top:0;height:140px;background:linear-gradient(#0A0D16, rgba(10,13,22,0));pointer-events:none}
 
     /* About */
     .about{display:grid;grid-template-columns:minmax(0, 380px) minmax(0, 1fr);gap:clamp(40px, 6vw, 96px);align-items:start}
@@ -397,33 +399,36 @@
     .paper-title{margin:0 0 6px;font-weight:600;font-size:19px;line-height:1.38}
     .paper-venue{margin:0;color:var(--dim);font-size:15.5px}
 
-    .contact{padding-bottom:clamp(80px, 12vh, 120px)}
-    .contact-mail{
-      display:inline-block;margin:6px 0 26px;
-      font-stretch:var(--wide);font-weight:750;
-      font-size:clamp(24px, 4vw, 48px);line-height:1.1;
-      text-decoration:underline;text-decoration-color:var(--kapton);text-decoration-thickness:2px;text-underline-offset:8px;
-      word-break:break-word;
+    /* Get in touch: a full-width deep-grey band */
+    .contact{position:relative;margin-top:clamp(64px, 10vh, 112px);background:#121317;border-top:1px solid rgba(255,255,255,.07)}
+    .contact-in{max-width:1180px;margin:0 auto;padding:clamp(28px, 4vw, 44px) var(--pad) 22px}
+    .contact-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+    .contact h2,.contact-mail{font-size:clamp(19px, 1.8vw, 24px);line-height:1.25}
+    .contact h2{font-stretch:var(--wide);font-weight:800;margin:0}
+    .contact-mail{font-weight:600;color:var(--kapton);text-decoration:none;overflow-wrap:anywhere}
+    .contact-mail:hover{color:#F3C06A}
+    .copy-btn{
+      width:34px;height:34px;flex:none;border-radius:50%;
+      display:grid;place-items:center;cursor:pointer;
+      background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.18);
+      transition:background-color .2s, border-color .2s, color .2s;
     }
-    .contact-links{display:flex;flex-wrap:wrap;gap:12px}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:11px 20px;border-radius:999px;
-      border:1px solid rgba(188,195,207,.3);
-      text-decoration:none;font-weight:600;font-size:15.5px;
-      transition:border-color .2s, background-color .2s;
+    .copy-btn:hover{border-color:var(--kapton)}
+    .copy-btn svg{width:15px;height:15px;grid-area:1 / 1}
+    .copy-btn .i-done{display:none}
+    .copy-btn.is-done{background:var(--kapton);border-color:var(--kapton);color:#1B1204}
+    .copy-btn.is-done .i-copy{display:none}
+    .copy-btn.is-done .i-done{display:block}
+    .copy-note{font-size:14px;color:var(--dim)}
+    .contact-base{
+      display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;
+      margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
+      font-size:13.5px;color:#8E93A0;
     }
-    .btn:hover{border-color:var(--kapton);background:rgba(227,164,58,.08)}
-    button.btn{background:transparent;color:var(--ink);font:inherit;font-weight:600;font-size:15.5px;cursor:pointer}
-    .btn.is-done{border-color:var(--kapton);color:var(--kapton)}
-    .contact-meta{margin:26px 0 0;color:var(--dim);font-size:15.5px}
-    .contact-meta time{color:var(--ink);font-variant-numeric:tabular-nums}
-
-    .foot{position:relative;max-width:1180px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--dim);font-size:14.5px}
-    .foot a{color:var(--dim);text-decoration:none}
-    .foot a:hover{color:var(--ink)}
-    .foot-in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:28px;border-top:1px solid var(--line)}
-    .foot p{margin:0}
+    .contact-base p{margin:0}
+    .contact-base nav{display:flex;gap:20px}
+    .contact-base a{color:inherit;text-decoration:none}
+    .contact-base a:hover{color:var(--ink)}
 
     /* ---------- Small screens ---------- */
     @media (max-width: 980px){
@@ -444,10 +449,14 @@
       .hud-mode{font-size:13.5px;margin-bottom:2px;justify-content:flex-end}
       .hud .hud-extra,.hud-hint{display:none}
       .hud dl{grid-template-columns:auto auto}
-      .earth{top:calc(100% - 3.5vh)}
+      .earth{top:calc(100% - 6vh)}
+      .hero-fade{height:6vh}
       .row,.row.has-photo{grid-template-columns:1fr;gap:6px;padding:28px 0}
       .row.has-photo .photo{grid-column:auto;grid-row:1;margin-bottom:14px}
       .when{display:flex;gap:16px;flex-wrap:wrap}
+      .contact h2,.contact-mail{font-size:17px}
+      .contact h2{font-stretch:100%}
+      .contact-line{gap:6px 10px}
       .about{grid-template-columns:1fr;gap:56px}
       .portrait{max-width:340px;margin-right:26px}
       .facts{grid-template-columns:1fr;gap:14px}
@@ -487,6 +496,7 @@
     <div class="orbit-pin">
       <canvas class="stars" id="stars" aria-hidden="true"></canvas>
       <div class="earth" aria-hidden="true"></div>
+      <div class="hero-fade" aria-hidden="true"></div>
 
       <div class="scene" id="scene">
         <div class="world" id="world">
@@ -760,25 +770,27 @@
       </ol>
     </section>
 
-    <!-- ======================= CONTACT ======================= -->
-    <section class="block contact" id="contact" data-place="taipei">
-      <div class="block-head">
-        <h2>Get in touch</h2>
-        <p>I'm open to research internships and collaborations in ADCS and GNC, especially work that involves building and testing hardware.</p>
-      </div>
-      <a class="contact-mail" href="mailto:icquinsaat@up.edu.ph">icquinsaat@up.edu.ph</a>
-      <div class="contact-links">
-        <button class="btn" type="button" id="copyEmail" data-email="icquinsaat@up.edu.ph">Copy email</button>
-        <a class="btn" href="https://www.linkedin.com/in/ivan-rohan-quinsaat-388595358/" target="_blank" rel="noreferrer">LinkedIn</a>
-      </div>
-      <p class="contact-meta">Currently in Taipei, Taiwan. Local time <time id="localTime">--:--</time> (UTC+8).</p>
-    </section>
   </main>
 
-  <footer class="foot">
-    <div class="foot-in">
-      <p>© 2026 Ivan Rohan Quinsaat</p>
-      <a href="#orbit">Back to top</a>
+  <!-- ======================= GET IN TOUCH ======================= -->
+  <footer class="contact" id="contact">
+    <div class="contact-in">
+      <div class="contact-line">
+        <h2>Get in touch:</h2>
+        <a class="contact-mail" href="mailto:icquinsaat@up.edu.ph">icquinsaat@up.edu.ph</a>
+        <button class="copy-btn" type="button" id="copyEmail" data-email="icquinsaat@up.edu.ph" aria-label="Copy email address">
+          <svg class="i-copy" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="i-done" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>
+        </button>
+        <span class="copy-note" id="copyNote" aria-live="polite"></span>
+      </div>
+      <div class="contact-base">
+        <p>© 2026 Ivan Rohan Quinsaat</p>
+        <nav aria-label="Footer">
+          <a href="https://www.linkedin.com/in/ivan-rohan-quinsaat-388595358/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="#orbit">Back to top</a>
+        </nav>
+      </div>
     </div>
   </footer>
 
@@ -832,20 +844,6 @@
         line: 'Working on attitude determination and control systems for small satellites. In progress.',
         href: '#exp-tensor', cta: 'Read the full entry',
         img: 'assets/missions/tensor-tech.jpg', illus: 'triad' },
-      { short: 'IAC 2026 paper', year: '2026',
-        title: 'L-band interference payload at IAC 2026',
-        when: 'Oct 2026', where: 'Antalya, Türkiye',
-        org: '77th International Astronautical Congress',
-        line: 'Co-authored a picosatellite payload that detects and collects L-band radio-frequency interference.',
-        href: '#papers', cta: 'See the paper',
-        img: 'assets/missions/iac-2026.jpg', illus: 'rfi' },
-      { short: 'First-author paper', year: '2026',
-        title: 'Origami antenna deployment at NSAT+',
-        when: 'Nov 2026', where: 'Tainan, Taiwan',
-        org: '15th Nano-Satellite Symposium+',
-        line: 'First-author paper on an origami antenna deployment mechanism that accommodates real substrate thickness.',
-        href: '#papers', cta: 'See the paper',
-        img: 'assets/missions/nsat-2026.jpg', illus: 'thickfold' },
       { short: 'Formation flying', year: 'Next',
         title: 'Next: formation-flying GNC',
         when: 'Ongoing', where: 'UP Diliman',
@@ -1193,13 +1191,18 @@
         const rel = wrap(i * STEP + angle);
         const c = (1 + Math.cos(rel * D2R)) / 2;
         t.style.setProperty('--lit', (.28 + .72 * c ** 1.6).toFixed(3));
+        t.style.setProperty('--face', (-rel * .55).toFixed(2) + 'deg'); // turn side tiles partly toward the viewer
         if (Math.abs(rel) < best) { best = Math.abs(rel); bi = i; }
       });
       setFront(bi);
 
-      const ia = 1 - smooth(.3, .7, s), ca = smooth(.5, .8, s);
+      const ia = 1 - smooth(.08, .38, s), ca = smooth(.46, .76, s), slide = reduce ? 0 : 22;
       intro.style.opacity = ia.toFixed(3);
+      intro.style.transform = `translateY(${(-slide * (1 - ia)).toFixed(1)}px)`;
+      intro.style.visibility = ia < .01 ? 'hidden' : '';
       caption.style.opacity = ca.toFixed(3);
+      caption.style.transform = `translateY(${(slide * (1 - ca)).toFixed(1)}px)`;
+      caption.style.visibility = ca < .01 ? 'hidden' : '';
       if ((ia > .5) !== introShown) {
         introShown = ia > .5;
         intro.inert = !introShown; caption.inert = introShown;
@@ -1217,7 +1220,8 @@
     new IntersectionObserver(([e]) => e.isIntersecting ? start() : stop()).observe(orbit);
 
     const onScroll = () => {
-      const past = orbit.getBoundingClientRect().bottom < 120;
+      // Solid header as soon as the hero starts scrolling away, so nothing slides under the menu
+      const past = orbit.getBoundingClientRect().bottom < innerHeight - 2;
       header.classList.toggle('is-solid', past);
       if (past) header.classList.add('show-name');
     };
@@ -1263,10 +1267,10 @@
       bctx.lineWidth = 1;
       for (let lat = -75; lat <= 75; lat += 15) {
         const y = proj(lat, mp.lonC)[1];
-        bctx.strokeStyle = lat === 0 ? 'rgba(116,196,255,.10)' : 'rgba(188,195,207,.05)';
+        bctx.strokeStyle = lat === 0 ? 'rgba(116,196,255,.07)' : 'rgba(188,195,207,.035)';
         bctx.beginPath(); bctx.moveTo(0, y); bctx.lineTo(W, y); bctx.stroke();
       }
-      bctx.strokeStyle = 'rgba(188,195,207,.05)';
+      bctx.strokeStyle = 'rgba(188,195,207,.035)';
       for (let lon = -180; lon < 180; lon += 15) {
         const x = proj(0, lon)[0];
         if (x < 0 || x > W) continue;
@@ -1284,10 +1288,18 @@
           if (x < -4 || x > W + 4) continue;
           const cz = Math.sin(la) * Math.sin(sd) + Math.cos(la) * Math.cos(sd) * Math.cos((lon - sun.lon) * D2R);
           const day = smooth(-.1, .1, cz);
-          bctx.fillStyle = `rgba(${Math.round(120 + 100 * day)},${Math.round(138 + 86 * day)},${Math.round(188 + 52 * day)},${(.15 + .18 * day).toFixed(3)})`;
+          bctx.fillStyle = `rgba(${Math.round(120 + 100 * day)},${Math.round(138 + 86 * day)},${Math.round(188 + 52 * day)},${(.10 + .13 * day).toFixed(3)})`;
           bctx.beginPath(); bctx.arc(x, y, r, 0, Math.PI * 2); bctx.fill();
         }
       }
+      // The full two-loop ground track, drawn once
+      const pts = Array.from({ length: 721 }, (_, k) => { const s = subsat(LOOP * k / 720); return proj(s[0], s[1]); });
+      bctx.strokeStyle = 'rgba(116,196,255,.2)'; bctx.lineWidth = 1.2;
+      bctx.beginPath();
+      pts.forEach(([x, y], k) => {
+        if (k === 0 || Math.abs(x - pts[k - 1][0]) > W * .5) bctx.moveTo(x, y); else bctx.lineTo(x, y);
+      });
+      bctx.stroke();
     }
 
     function mapLayout(){
@@ -1301,52 +1313,32 @@
       drawBase();
     }
 
-    // Sun-synchronous orbit (97.4 deg inclination). One animated orbit every 48 s,
-    // with the Earth turning about 24 deg underneath per orbit.
-    const INC = 97.4 * D2R, TORB = 48, LON0 = 112, FOOT = 12;
+    // A repeating ground track: 55 deg inclination, with the Earth turning 180 deg per orbit,
+    // so the path closes on itself after two loops. One orbit takes 80 s on screen.
+    const INC = 55 * D2R, TORB = 80, LOOP = 2 * TORB, LON0 = 70, FOOT = 12;
     const subsat = t => {
       const u = 2 * Math.PI * t / TORB;
       return [Math.asin(Math.sin(INC) * Math.sin(u)) / D2R,
-              LON0 + Math.atan2(Math.cos(INC) * Math.sin(u), Math.cos(u)) / D2R - 24 * t / TORB];
+              LON0 + Math.atan2(Math.cos(INC) * Math.sin(u), Math.cos(u)) / D2R - 180 * t / TORB];
     };
     const angDist = (a, b) => {
       const p1 = a[0] * D2R, p2 = b[0] * D2R, dl = (a[1] - b[1]) * D2R;
       return Math.acos(clamp(Math.sin(p1) * Math.sin(p2) + Math.cos(p1) * Math.cos(p2) * Math.cos(dl), -1, 1)) / D2R;
     };
-    const trackPts = (t0, t1, n) => Array.from({ length: n + 1 }, (_, k) => { const s = subsat(t0 + (t1 - t0) * k / n); return proj(s[0], s[1]); });
-    function strokePts(pts, from, to){
-      mctx.beginPath();
-      for (let k = from; k <= to && k < pts.length; k++) {
-        const [x, y] = pts[k];
-        if (k === from || Math.abs(x - pts[k - 1][0]) > mp.W * .5) mctx.moveTo(x, y); else mctx.lineTo(x, y);
-      }
-      mctx.stroke();
-    }
 
     let activePlaces = new Set();
     const mapT0 = performance.now();
     function drawMap(now){
       const { W, H, dpr } = mp;
       mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      mctx.clearRect(0, 0, W, H);
+      mctx.fillStyle = '#0A0D16'; mctx.fillRect(0, 0, W, H);
       mctx.drawImage(base, 0, 0, W, H);
-      const t = reduce ? TORB * .3 : (now - mapT0) / 1000;
+      const t = reduce ? TORB * .3 : ((now - mapT0) / 1000) % LOOP;
 
-      // Ground track: the last orbit fades with age, the next stretch is dashed
-      const past = trackPts(t - TORB * 1.15, t, 230);
-      mctx.lineWidth = 1.4;
-      for (let s = 0; s < 10; s++) {
-        mctx.strokeStyle = `rgba(116,196,255,${(.04 + .34 * (s / 9) ** 1.6).toFixed(3)})`;
-        strokePts(past, s * 23, (s + 1) * 23);
-      }
-      mctx.setLineDash([3, 6]); mctx.strokeStyle = 'rgba(116,196,255,.22)';
-      strokePts(trackPts(t, t + TORB * .4, 80), 0, 80);
-      mctx.setLineDash([]);
-
-      // Satellite with its coverage footprint
+      // Satellite with its coverage footprint (the track itself is static, drawn in drawBase)
       const ss = subsat(t), [sx, sy] = proj(ss[0], ss[1]);
       const ry = FOOT / 2 * mp.sp, rx = Math.min(ry / Math.max(Math.cos(ss[0] * D2R), .25), ry * 1.8);
-      mctx.fillStyle = 'rgba(116,196,255,.035)'; mctx.strokeStyle = 'rgba(116,196,255,.22)'; mctx.lineWidth = 1;
+      mctx.fillStyle = 'rgba(116,196,255,.025)'; mctx.strokeStyle = 'rgba(116,196,255,.16)'; mctx.lineWidth = 1;
       mctx.beginPath(); mctx.ellipse(sx, sy, rx, ry, 0, 0, Math.PI * 2); mctx.fill(); mctx.stroke();
       const glow = mctx.createRadialGradient(sx, sy, 0, sx, sy, 13);
       glow.addColorStop(0, 'rgba(227,164,58,.55)'); glow.addColorStop(1, 'rgba(227,164,58,0)');
@@ -1376,9 +1368,8 @@
       requestAnimationFrame(mapLoop);
     }
     function mapVisibility(){
-      const o = clamp(1 - orbit.getBoundingClientRect().bottom / innerHeight, 0, 1);
-      mapEl.style.opacity = o.toFixed(3);
-      const want = o > 0 && !document.hidden;
+      // The hero is opaque, so the map only needs drawing once the page below it is in view
+      const want = orbit.getBoundingClientRect().bottom < innerHeight && !document.hidden;
       if (want && !mapOn) { mapOn = true; requestAnimationFrame(mapLoop); }
       if (!want) mapOn = false;
     }
@@ -1459,20 +1450,16 @@
       else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(front - 1); }
     });
 
-    /* ---------- Contact: local time and copy email ---------- */
-    const lt = $('#localTime');
-    if (lt) {
-      const tf = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit' });
-      const tick = () => { lt.textContent = tf.format(new Date()); };
-      tick(); setInterval(tick, 15000);
-    }
-    const ce = $('#copyEmail');
+    /* ---------- Copy email ---------- */
+    const ce = $('#copyEmail'), cn = $('#copyNote');
+    let copyTimer;
     if (ce) ce.addEventListener('click', async () => {
       const email = ce.dataset.email;
       try { await navigator.clipboard.writeText(email); }
       catch { location.href = 'mailto:' + email; return; }
-      ce.textContent = 'Copied'; ce.classList.add('is-done');
-      setTimeout(() => { ce.textContent = 'Copy email'; ce.classList.remove('is-done'); }, 2000);
+      ce.classList.add('is-done'); cn.textContent = 'Copied';
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(() => { ce.classList.remove('is-done'); cn.textContent = ''; }, 2000);
     });
   })();
   </script>
