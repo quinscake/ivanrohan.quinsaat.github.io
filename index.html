@@ -69,9 +69,9 @@
     .orbit-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--space)}
 
     /* Live map behind the content: land dots with today's day/night line and a moving ground track */
-    .map{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;background:#0A0D16}
+    .map{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;background:#05070C}
     /* Fades the bottom of the hero into the page colour so there is no hard edge */
-    .hero-fade{position:absolute;left:0;right:0;bottom:0;height:12vh;background:linear-gradient(rgba(10,13,22,0), #0A0D16 94%);pointer-events:none}
+    .hero-fade{position:absolute;left:0;right:0;bottom:0;height:12vh;background:linear-gradient(rgba(10,13,22,0), #05070C 94%);pointer-events:none}
     .stars{position:absolute;inset:0;width:100%;height:100%;display:block}
 
     .earth{
@@ -281,7 +281,7 @@
 
     /* ---------- Content ---------- */
     main{position:relative;padding-bottom:40px}
-    main::before{content:"";position:absolute;left:0;right:0;top:0;height:140px;background:linear-gradient(#0A0D16, rgba(10,13,22,0));pointer-events:none}
+    main::before{content:"";position:absolute;left:0;right:0;top:0;height:140px;background:linear-gradient(#05070C, rgba(10,13,22,0));pointer-events:none}
 
     /* About */
     .about{display:grid;grid-template-columns:minmax(0, 380px) minmax(0, 1fr);gap:clamp(40px, 6vw, 96px);align-items:start}
@@ -1331,7 +1331,7 @@
     function drawMap(now){
       const { W, H, dpr } = mp;
       mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      mctx.fillStyle = '#0A0D16'; mctx.fillRect(0, 0, W, H);
+      mctx.fillStyle = '#05070C'; mctx.fillRect(0, 0, W, H);
       mctx.drawImage(base, 0, 0, W, H);
       const t = reduce ? TORB * .3 : ((now - mapT0) / 1000) % LOOP;
 
