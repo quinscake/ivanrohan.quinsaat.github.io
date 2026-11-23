@@ -751,7 +751,7 @@
               <li>Developed and fabricated two prototypes that deploy a membrane antenna from a 1U nanosatellite payload.</li>
             </ul>
           </div>
-          <figure class="photo" data-illus="miura">
+          <figure class="photo" data-illus="membrane">
             <img src="assets/missions/origamisat3-prototype.jpg" alt="Membrane antenna deployment prototype for OrigamiSat-3" loading="lazy" onerror="this.remove()">
             <video src="assets/missions/origamisat3-deploy.mp4" muted loop playsinline preload="metadata" aria-label="Deployment test of the membrane antenna prototype" onerror="this.remove()"></video>
           </figure>
@@ -908,6 +908,9 @@
        illus: which drawing to use as the fallback
        href:  where "Read the full entry" goes
        ========================================================= */
+    // The spinning tiles show the line drawings even after you add photos (photos still
+    // appear in the Experience section). Set this to true to put your photos on the tiles too.
+    const RING_PHOTOS = false;
     const MISSIONS = [
       { short: 'Reaction-wheel testbed', year: '2025',
         title: 'Four-wheel reaction-wheel ADCS testbed',
@@ -922,8 +925,8 @@
         org: 'Institute of Science Tokyo, Sakamoto Lab',
         line: 'Designed the initial version of a folding membrane antenna payload and built two prototypes that deploy it from a 1U nanosatellite payload.',
         href: '#exp-origami3', cta: 'Read the full entry',
-        img: 'assets/missions/origamisat3-prototype.jpg', illus: 'miura' },
-      { short: 'OrigamiSat-2 passes', year: '2026',
+        img: 'assets/missions/origamisat3-prototype.jpg', illus: 'membrane' },
+      { short: 'OrigamiSat-2 operations', year: '2026',
         title: 'Ground station operations for OrigamiSat-2',
         when: 'Apr–Aug 2026', where: 'Tokyo, Japan',
         org: 'Institute of Science Tokyo, JAXA Innovative Satellite 4',
@@ -955,6 +958,8 @@
       const p2 = [x2 - h * Math.cos(a + .45), y2 - h * Math.sin(a + .45)];
       return `<path d="M${x1} ${y1}L${x2} ${y2}M${p1}L${x2} ${y2}L${p2}" stroke="${c}" stroke-opacity="${o}"/>`;
     };
+    const lerp = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+    const pt = p => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
     const ILLUS = {
       wheels(){
         // Four-wheel testbed seen from above
@@ -964,24 +969,35 @@
         });
         return svg(`<circle cx="200" cy="150" r="126" stroke="${A}" stroke-opacity=".14" stroke-dasharray="2 6"/><path d="M200 14v18M200 268v18M62 150h18M320 150h18" stroke="${L}" stroke-opacity=".5"/><g><circle cx="200" cy="150" r="108" stroke="${A}" stroke-opacity=".28"/><rect x="180" y="130" width="40" height="40" rx="3" stroke="${A}" stroke-opacity=".7"/><circle cx="200" cy="150" r="4" fill="${K}" stroke="none"/>${g}</g>`);
       },
-      miura(){
-        // Miura-ori membrane deployed from a 1U box
-        const x0 = 150, y0 = 56, cols = 6, rows = 5, cw = 36, rh = 37, off = 12;
-        let s = '';
-        for (let i = 0; i <= rows; i++) {
-          const y = y0 + i * rh, dx = i % 2 ? off : 0;
-          s += `<line x1="${x0 + dx}" y1="${y}" x2="${x0 + cols * cw + dx}" y2="${y}" stroke="${A}" stroke-opacity=".45"/>`;
+      membrane(){
+        // 3U CubeSat with a triangular membrane antenna held out on two booms
+        const H = [130, 70], T = [374, 128], E = [162, 252];   // boom hub, membrane tip, lower boom end
+        let grid = '';
+        for (let i = 1; i < 8; i++) {
+          const t = i / 8;
+          grid += `M${pt(lerp(H, E, t))}L${pt(lerp(T, E, t))}M${pt(lerp(H, T, t))}L${pt(lerp(E, T, t))}`;
         }
-        for (let j = 0; j <= cols; j++) {
-          const pts = [];
-          for (let i = 0; i <= rows; i++) pts.push(`${x0 + j * cw + (i % 2 ? off : 0)},${y0 + i * rh}`);
-          s += `<polyline points="${pts.join(' ')}" stroke="${j % 2 ? A : K}" ${j % 2 ? 'stroke-dasharray="4 4" stroke-opacity=".7"' : ''}/>`;
-        }
-        return svg(`<g>${s}</g><rect x="86" y="117" width="62" height="62" rx="3" fill="#10183B" stroke="${A}" stroke-opacity=".8"/><rect x="96" y="127" width="42" height="42" rx="2" stroke="${A}" stroke-opacity=".3"/>`);
+        let cells = '';
+        [58, 122, 188].forEach(y0 => [80, 101].forEach(x0 => {
+          cells += `<rect x="${x0}" y="${y0 + 7}" width="17" height="51" rx="1.5" fill="#22357A" stroke="${A}" stroke-opacity=".3"/>`;
+        }));
+        return svg(`<path d="M${pt(H)}L${pt(T)}L${pt(E)}Z" fill="${K}" fill-opacity=".42" stroke="${K}" stroke-opacity=".9"/><path d="${grid}" stroke="#F6CF6E" stroke-opacity=".55" stroke-width="1"/><rect x="74" y="58" width="50" height="196" rx="3" fill="#10183B" stroke="${A}" stroke-opacity=".85"/><path d="M74 122h50M74 188h50" stroke="${A}" stroke-opacity=".45"/>${cells}<path d="M${pt(H)}L${pt(T)}M${pt(H)}L${pt(E)}" stroke="${A}" stroke-width="3.2"/><circle cx="${H[0]}" cy="${H[1]}" r="5" fill="#10183B" stroke="${A}" stroke-width="2"/>`);
       },
       dish(){
-        // Ground station dish with a downlink to a passing satellite
-        return svg(`<path d="M24 120C120 34 280 24 380 70" stroke="${L}" stroke-opacity=".4" stroke-dasharray="3 5"/><path d="M40 254H360" stroke="${A}" stroke-opacity=".3"/><path d="M190 254 206 236 222 254" stroke="${A}" stroke-opacity=".7"/><path d="M136 172C146 232 236 254 288 206" stroke="${K}"/><path d="M136 172 288 206" stroke="${K}" stroke-opacity=".4" stroke-dasharray="3 5"/><path d="M160 180 240 146M270 202 240 146" stroke="${A}" stroke-opacity=".55"/><circle cx="240" cy="146" r="5" stroke="${K}"/><path d="M246 140 316 84" stroke="${L}" stroke-opacity=".8" stroke-dasharray="3 5"/><rect x="316" y="66" width="16" height="16" rx="1" stroke="${A}"/><path d="M300 74h16M332 74h16" stroke="${K}"/><path d="M280 116a40 40 0 0 1 20-28M268 108a56 56 0 0 1 26-38" stroke="${L}" stroke-opacity=".5"/>`);
+        // Ground station: a dish on the horizon tracking a satellite along its orbit
+        const orbit = t => [ (1 - t) ** 2 * 26 + 2 * (1 - t) * t * 190 + t * t * 392, (1 - t) ** 2 * 176 + 2 * (1 - t) * t * 6 + t * t * 92 ];
+        const Sat = orbit(.72), D = [168, 196];
+        const len = Math.hypot(Sat[0] - D[0], Sat[1] - D[1]);
+        const f = [(Sat[0] - D[0]) / len, (Sat[1] - D[1]) / len], c = [-f[1], f[0]];
+        const rx = 46, ry = 19, rot = Math.atan2(c[1], c[0]) * 180 / Math.PI;
+        const E1 = [D[0] - rx * c[0], D[1] - rx * c[1]], E2 = [D[0] + rx * c[0], D[1] + rx * c[1]];
+        const F = [D[0] + 40 * f[0], D[1] + 40 * f[1]], back = [D[0] - ry * f[0], D[1] - ry * f[1]];
+        const th = Math.atan2(f[1], f[0]);
+        const arc = r => { const a = th - .42, b = th + .42; return `M${pt([F[0] + r * Math.cos(a), F[1] + r * Math.sin(a)])}A${r} ${r} 0 0 1 ${pt([F[0] + r * Math.cos(b), F[1] + r * Math.sin(b)])}`; };
+        const orbitPath = `M26 176Q190 6 392 92`;
+        const stars = [[54,64],[110,40],[246,34],[352,40],[70,120],[372,168],[300,150]]
+          .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 2 ? 1.1 : 1.7}" fill="${A}" fill-opacity=".55" stroke="none"/>`).join('');
+        return svg(`${stars}<path d="${orbitPath}" stroke="${L}" stroke-opacity=".45" stroke-dasharray="3 6"/><path d="M-20 300Q200 178 420 300" fill="#121C40" stroke="${L}" stroke-width="2"/><path d="M${back[0] - 16} 241L${pt(back)}L${back[0] + 16} 241" stroke="${A}" stroke-width="2.4"/><path d="M${pt(D)}L${pt(F)}" stroke="${A}" stroke-width="2"/><path d="M${pt(E1)}A${rx} ${ry} ${rot.toFixed(1)} 0 0 ${pt(E2)}Z" fill="${K}" stroke="${K}"/><circle cx="${F[0].toFixed(1)}" cy="${F[1].toFixed(1)}" r="4.5" fill="${K}" stroke="none"/><path d="${arc(26)}" stroke="${L}" stroke-width="2.4"/><path d="${arc(44)}" stroke="${L}" stroke-width="2.4" stroke-opacity=".65"/><path d="${arc(62)}" stroke="${L}" stroke-width="2.4" stroke-opacity=".35"/><g transform="translate(${pt(Sat)}) rotate(${(th * 180 / Math.PI + 90).toFixed(1)})"><rect x="-29" y="-7" width="19" height="14" rx="1" fill="#2E4AA8" stroke="${A}" stroke-opacity=".7"/><rect x="10" y="-7" width="19" height="14" rx="1" fill="#2E4AA8" stroke="${A}" stroke-opacity=".7"/><rect x="-9" y="-9" width="18" height="18" rx="1.5" fill="${K}" stroke="${A}" stroke-opacity=".7"/></g>`);
       },
       triad(){
         // Satellite body axes
@@ -1021,7 +1037,7 @@
       a.setAttribute('aria-label', `${m.title}, ${m.when}. Mission ${i + 1} of ${N}`);
       a.innerHTML =
         `<span class="tile-face tile-front"><span class="tile-photo">${ILLUS[m.illus] ? ILLUS[m.illus]() : ''}` +
-        (m.img ? `<img src="${m.img}" alt="" onerror="this.remove()">` : '') +
+        (m.img && RING_PHOTOS ? `<img src="${m.img}" alt="" onerror="this.remove()">` : '') +
         `</span><span class="tile-label"><span class="tile-title">${m.short}</span><span class="tile-when">${m.year}</span></span></span>` +
         `<span class="tile-face tile-back" aria-hidden="true">${i + 1}</span>`;
       ring.appendChild(a);
