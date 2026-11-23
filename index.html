@@ -21,7 +21,7 @@
       --space-2:#10183B;
       --ink:#D5D9E2;        /* headings and titles: soft white, not pure white */
       --ink-2:#B4BAC7;      /* body text */
-      --dim:#8C94A8;        /* small labels, dates, captions */
+      --dim:#A7AEBF;        /* small labels, dates, captions */
       --kapton:#E3A43A;     /* MLI / polyimide foil */
       --cell:#16214A;       /* solar cell blue */
       --limb:#74C4FF;       /* atmosphere at the Earth's limb */
@@ -73,7 +73,7 @@
     .top-name{font-stretch:var(--wide);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap;opacity:0;transition:opacity .3s}
     .top.show-name .top-name{opacity:1}
     .top-nav{display:flex;gap:clamp(14px, 2.4vw, 32px);font-size:15px}
-    .top-nav a{text-decoration:none;color:var(--dim);transition:color .2s}
+    .top-nav a{text-decoration:none;color:#C6CCD8;transition:color .2s}
     .top-nav a:hover{color:var(--ink)}
 
     /* ---------- Orbit hero ---------- */
@@ -237,8 +237,21 @@
     }
     .lede{font-size:clamp(17px, 1.3vw, 19.5px);line-height:1.55;margin:0 0 22px;color:var(--ink-2)}
     .lede strong{color:var(--ink);font-weight:600}
+    .intro-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+    .btn-primary{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:13px 24px;border-radius:999px;
+      background:var(--kapton);color:#1A1205;
+      font-weight:650;font-size:16px;text-decoration:none;
+      box-shadow:0 10px 30px rgba(227,164,58,.22);
+      transition:background-color .2s, box-shadow .2s;
+    }
+    .btn-primary:hover{background:#EDB55A;box-shadow:0 12px 34px rgba(227,164,58,.32)}
+    .btn-primary:focus-visible{outline-color:#fff}
+    .btn-primary svg{width:16px;height:16px}
     .hint{margin:0;color:var(--dim);font-size:15px}
-    .hint a{color:var(--ink);text-decoration-color:var(--kapton);text-underline-offset:4px}
+    .cap-skip{display:inline-block;margin-top:18px;font-size:15px;color:var(--dim);text-decoration:underline;text-decoration-color:rgba(167,174,191,.45);text-underline-offset:4px}
+    .cap-skip:hover{color:var(--ink)}
 
     .caption{opacity:0}
     .cap-meta{display:flex;flex-wrap:wrap;gap:4px 20px;margin:0 0 14px;font-stretch:var(--cond);font-size:15.5px;color:var(--dim);font-variant-numeric:tabular-nums}
@@ -261,11 +274,11 @@
       width:42px;height:42px;border-radius:50%;
       display:grid;place-items:center;
       background:transparent;color:var(--ink);
-      border:1px solid rgba(188,195,207,.3);cursor:pointer;
+      border:1px solid rgba(198,204,216,.55);cursor:pointer;
       transition:border-color .2s, background-color .2s;
     }
     .step:hover:not(:disabled){border-color:var(--kapton);background:rgba(227,164,58,.08)}
-    .step:disabled{opacity:.3;cursor:default}
+    .step:disabled{opacity:.38;cursor:default}
     .step svg{width:16px;height:16px}
     .caption.flash{animation:flash .45s ease-out}
     @keyframes flash{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -385,6 +398,7 @@
       border-top:1px solid var(--line);
     }
     .row.has-photo{grid-template-columns:150px minmax(0, 1fr) minmax(0, 360px)}
+    .row.featured .photo{grid-column:2;aspect-ratio:16 / 9;margin-top:14px}
     .when{font-stretch:var(--cond);font-size:16px;line-height:1.45;color:var(--dim);font-variant-numeric:tabular-nums}
     .when p{margin:0}
     .when .now{color:var(--kapton);font-weight:600}
@@ -405,11 +419,20 @@
       background-size:20px 20px;
       border:1px solid var(--line);
     }
-    .photo svg,.photo img{position:absolute;inset:0;width:100%;height:100%;display:block}
-    .photo img{object-fit:cover}
+    .photo svg,.photo img,.photo video{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .photo img,.photo video{object-fit:cover}
 
-    .paper-title{margin:0 0 6px;font-weight:600;font-size:19px;line-height:1.38}
-    .paper-venue{margin:0;color:var(--dim);font-size:15.5px}
+    .papers{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:18px}
+    .paper{
+      display:flex;flex-direction:column;
+      padding:22px 24px 24px;border-radius:10px;
+      border:1px solid var(--line);background:color-mix(in srgb, var(--page) 95%, white);
+    }
+    .paper.lead{border-color:rgba(227,164,58,.5);background:color-mix(in srgb, var(--page) 93%, var(--kapton))}
+    .paper-meta{display:flex;justify-content:space-between;gap:12px;margin:0 0 14px;font-stretch:var(--cond);font-size:15.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+    .paper.lead .role{color:var(--kapton);font-weight:600}
+    .paper-title{margin:0 0 16px;font-weight:600;font-size:19px;line-height:1.38}
+    .paper-venue{margin:auto 0 0;color:var(--dim);font-size:15.5px}
 
     /* Get in touch: a full-width deep-grey band */
     .contact{position:relative;margin-top:clamp(64px, 10vh, 112px);background:#121317;border-top:1px solid rgba(255,255,255,.07)}
@@ -435,7 +458,7 @@
     .contact-base{
       display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;
       margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
-      font-size:13.5px;color:#8E93A0;
+      font-size:13.5px;color:var(--dim);
     }
     .contact-base p{margin:0}
     .contact-base nav{display:flex;gap:20px}
@@ -464,7 +487,8 @@
       .earth{top:calc(100% - 6vh)}
       .hero-fade{height:6vh}
       .row,.row.has-photo{grid-template-columns:1fr;gap:6px;padding:28px 0}
-      .row.has-photo .photo{grid-column:auto;grid-row:1;margin-bottom:14px}
+      .row.has-photo .photo,.row.featured .photo{grid-column:auto;grid-row:1;margin:0 0 14px}
+      .papers{grid-template-columns:1fr}
       .when{display:flex;gap:16px;flex-wrap:wrap}
       .contact h2,.contact-mail{font-size:17px}
       .contact h2{font-stretch:100%}
@@ -478,6 +502,22 @@
       .lb-prev{left:calc(50% - 56px)}
       .lb-next{right:calc(50% - 56px)}
     }
+
+    /* Blueprint drawings move while on screen; a photo or clip covers them once added */
+    @media (prefers-reduced-motion: no-preference){
+      .photo.in-view .a-yaw{transform-box:view-box;transform-origin:200px 150px;animation:yaw 26s linear infinite}
+      .photo.in-view .a-rim{animation:flow .7s linear infinite}
+      .photo.in-view .a-deploy{transform-box:view-box;transform-origin:150px 148px;animation:deploy 7s cubic-bezier(.6,0,.3,1) infinite}
+      .photo.in-view .a-flow{animation:flow 1s linear infinite}
+      .photo.in-view .a-flow-slow{animation:flow 3.6s linear infinite}
+      .photo.in-view .a-pulse{animation:pulse 2.4s ease-in-out infinite}
+      .photo.in-view .a-sway{transform-box:view-box;transform-origin:200px 178px;animation:sway 5s ease-in-out infinite alternate}
+    }
+    @keyframes yaw{to{transform:rotate(-360deg)}}
+    @keyframes flow{to{stroke-dashoffset:-16}}
+    @keyframes deploy{0%,10%{transform:scale(.2,.42)}48%,82%{transform:scale(1)}100%{transform:scale(.2,.42)}}
+    @keyframes pulse{50%{opacity:.12}}
+    @keyframes sway{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
 
     @media (prefers-reduced-motion: reduce){
       html{scroll-behavior:auto}
@@ -538,7 +578,12 @@
         <div class="intro" id="intro">
           <h1>Ivan Rohan Quinsaat</h1>
           <p class="lede">Electronics engineering student at UP Diliman working on small satellites: attitude control, deployable antennas, and formation-flying GNC. <strong>Currently an ADCS intern at Tensor Tech in Taipei.</strong></p>
-          <p class="hint">Scroll to rotate through my missions, or <a href="#experience">skip to the full list</a>.</p>
+          <div class="intro-actions">
+            <a class="btn-primary" href="#experience">View experience
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5"/></svg>
+            </a>
+            <p class="hint">or scroll to fly through the missions</p>
+          </div>
         </div>
 
         <div class="caption" id="caption" aria-live="polite">
@@ -555,6 +600,7 @@
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg>
             </button>
           </div>
+          <a class="cap-skip" href="#experience">Skip to the full experience list</a>
         </div>
       </div>
 
@@ -693,7 +739,10 @@
           </figure>
         </li>
 
-        <li class="row has-photo" id="exp-origami3" data-place="tokyo">
+        <!-- Featured entry: wide media. Add a short deployment clip at the <video> path below
+             (MP4, muted, a few seconds, under ~8 MB). Until it exists, the photo shows; until
+             that exists, the animated drawing shows. -->
+        <li class="row featured" id="exp-origami3" data-place="tokyo">
           <div class="when"><p>Apr–Aug 2026</p><p>Tokyo, Japan</p></div>
           <div>
             <h3>Deployable antenna payload for OrigamiSat-3</h3>
@@ -706,6 +755,7 @@
           </div>
           <figure class="photo" data-illus="miura">
             <img src="assets/missions/origamisat3-prototype.jpg" alt="Membrane antenna deployment prototype for OrigamiSat-3" loading="lazy" onerror="this.remove()">
+            <video src="assets/missions/origamisat3-deploy.mp4" muted loop playsinline preload="metadata" aria-label="Deployment test of the membrane antenna prototype" onerror="this.remove()"></video>
           </figure>
         </li>
 
@@ -750,34 +800,26 @@
         <p>Four conference papers in 2026, one as first author.</p>
       </div>
 
-      <ol class="rows">
-        <li class="row" data-place="tainan">
-          <div class="when"><p>Nov 2026</p><p class="now">First author</p></div>
-          <div>
-            <p class="paper-title">Development of an Origami Antenna Deployment Mechanism Accommodating Substrate Thickness for Nanosatellites</p>
-            <p class="paper-venue">15th Nano-Satellite Symposium+ (NSAT+), Tainan, Taiwan</p>
-          </div>
+      <ol class="papers">
+        <li class="paper lead" data-place="tainan">
+          <p class="paper-meta"><span>Nov 2026</span><span class="role">First author</span></p>
+          <p class="paper-title">Development of an Origami Antenna Deployment Mechanism Accommodating Substrate Thickness for Nanosatellites</p>
+          <p class="paper-venue">15th Nano-Satellite Symposium+ (NSAT+), Tainan, Taiwan</p>
         </li>
-        <li class="row" data-place="utsunomiya">
-          <div class="when"><p>Nov 2026</p><p>Co-author</p></div>
-          <div>
-            <p class="paper-title">Evaluation of the Stowage and Deployment Characteristics of a Membrane-Based Reconfigurable Reflectarray Antenna Structure</p>
-            <p class="paper-venue">70th Space Sciences and Technology Conference, Utsunomiya, Japan</p>
-          </div>
+        <li class="paper" data-place="utsunomiya">
+          <p class="paper-meta"><span>Nov 2026</span><span class="role">Co-author</span></p>
+          <p class="paper-title">Evaluation of the Stowage and Deployment Characteristics of a Membrane-Based Reconfigurable Reflectarray Antenna Structure</p>
+          <p class="paper-venue">70th Space Sciences and Technology Conference, Utsunomiya, Japan</p>
         </li>
-        <li class="row" data-place="utsunomiya">
-          <div class="when"><p>Nov 2026</p><p>Co-author</p></div>
-          <div>
-            <p class="paper-title">On-Orbit Attitude Data Analysis of the OrigamiSat-2 CubeSat with a Deployable Membrane Antenna Structure</p>
-            <p class="paper-venue">70th Space Sciences and Technology Conference, Utsunomiya, Japan (accepted)</p>
-          </div>
+        <li class="paper" data-place="utsunomiya">
+          <p class="paper-meta"><span>Nov 2026</span><span class="role">Co-author</span></p>
+          <p class="paper-title">On-Orbit Attitude Data Analysis of the OrigamiSat-2 CubeSat with a Deployable Membrane Antenna Structure</p>
+          <p class="paper-venue">70th Space Sciences and Technology Conference, Utsunomiya, Japan (accepted)</p>
         </li>
-        <li class="row" data-place="antalya">
-          <div class="when"><p>Oct 2026</p><p>Co-author</p></div>
-          <div>
-            <p class="paper-title">L-Band Radio Frequency Interference Detection and Collection Payload-System on a Picosatellite Platform</p>
-            <p class="paper-venue">77th International Astronautical Congress (IAC 2026), Antalya, Türkiye</p>
-          </div>
+        <li class="paper" data-place="antalya">
+          <p class="paper-meta"><span>Oct 2026</span><span class="role">Co-author</span></p>
+          <p class="paper-title">L-Band Radio Frequency Interference Detection and Collection Payload-System on a Picosatellite Platform</p>
+          <p class="paper-venue">77th International Astronautical Congress (IAC 2026), Antalya, Türkiye</p>
         </li>
       </ol>
     </section>
@@ -876,13 +918,15 @@
     };
     const ILLUS = {
       wheels(){
+        // Testbed seen from above: wheels spin, and the platform slowly yaws the other way
         let g = '';
         [45, 135, 225, 315].forEach(a => {
-          g += `<g transform="rotate(${a} 200 150)"><line x1="222" y1="150" x2="258" y2="150" stroke="${A}" stroke-opacity=".5"/><ellipse cx="268" cy="150" rx="8" ry="30" stroke="${K}"/><ellipse cx="268" cy="150" rx="3" ry="11" stroke="${K}" stroke-opacity=".55"/></g>`;
+          g += `<g transform="rotate(${a} 200 150)"><line x1="222" y1="150" x2="258" y2="150" stroke="${A}" stroke-opacity=".5"/><ellipse class="a-rim" cx="268" cy="150" rx="8" ry="30" stroke="${K}" stroke-dasharray="5 3"/><ellipse cx="268" cy="150" rx="3" ry="11" stroke="${K}" stroke-opacity=".55"/></g>`;
         });
-        return svg(`<circle cx="200" cy="150" r="108" stroke="${A}" stroke-opacity=".28"/><circle cx="200" cy="150" r="126" stroke="${A}" stroke-opacity=".14" stroke-dasharray="2 6"/><rect x="180" y="130" width="40" height="40" rx="3" stroke="${A}" stroke-opacity=".7"/><circle cx="200" cy="150" r="4" fill="${K}" stroke="none"/>${g}<path d="M200 14v18M200 268v18M62 150h18M320 150h18" stroke="${L}" stroke-opacity=".5"/>`);
+        return svg(`<circle cx="200" cy="150" r="126" stroke="${A}" stroke-opacity=".14" stroke-dasharray="2 6"/><path d="M200 14v18M200 268v18M62 150h18M320 150h18" stroke="${L}" stroke-opacity=".5"/><g class="a-yaw"><circle cx="200" cy="150" r="108" stroke="${A}" stroke-opacity=".28"/><rect x="180" y="130" width="40" height="40" rx="3" stroke="${A}" stroke-opacity=".7"/><circle cx="200" cy="150" r="4" fill="${K}" stroke="none"/>${g}</g>`);
       },
       miura(){
+        // Miura-ori membrane unfolding out of a 1U box (it opens in both directions at once)
         const x0 = 150, y0 = 56, cols = 6, rows = 5, cw = 36, rh = 37, off = 12;
         let s = '';
         for (let i = 0; i <= rows; i++) {
@@ -894,38 +938,21 @@
           for (let i = 0; i <= rows; i++) pts.push(`${x0 + j * cw + (i % 2 ? off : 0)},${y0 + i * rh}`);
           s += `<polyline points="${pts.join(' ')}" stroke="${j % 2 ? A : K}" ${j % 2 ? 'stroke-dasharray="4 4" stroke-opacity=".7"' : ''}/>`;
         }
-        return svg(`<rect x="44" y="184" width="62" height="62" rx="3" stroke="${A}" stroke-opacity=".75"/><rect x="54" y="194" width="42" height="42" rx="2" stroke="${A}" stroke-opacity=".3"/><path d="M106 186 150 ${y0}M106 244 ${150 + off} ${y0 + rows * rh}" stroke="${K}" stroke-opacity=".45" stroke-dasharray="3 5"/>${s}`);
+        return svg(`<g class="a-deploy">${s}</g><rect x="86" y="117" width="62" height="62" rx="3" fill="#10183B" stroke="${A}" stroke-opacity=".8"/><rect x="96" y="127" width="42" height="42" rx="2" stroke="${A}" stroke-opacity=".3"/>`);
       },
       dish(){
-        return svg(`<path d="M24 120C120 34 280 24 380 70" stroke="${L}" stroke-opacity=".4" stroke-dasharray="3 7"/><path d="M40 254H360" stroke="${A}" stroke-opacity=".3"/><path d="M190 254 206 236 222 254" stroke="${A}" stroke-opacity=".7"/><path d="M136 172C146 232 236 254 288 206" stroke="${K}"/><path d="M136 172 288 206" stroke="${K}" stroke-opacity=".4" stroke-dasharray="3 5"/><path d="M160 180 240 146M270 202 240 146" stroke="${A}" stroke-opacity=".55"/><circle cx="240" cy="146" r="5" stroke="${K}"/><path d="M246 140 316 84" stroke="${L}" stroke-opacity=".7" stroke-dasharray="3 6"/><rect x="316" y="66" width="16" height="16" rx="1" stroke="${A}"/><path d="M300 74h16M332 74h16" stroke="${K}"/><path d="M280 116a40 40 0 0 1 20-28M268 108a56 56 0 0 1 26-38" stroke="${L}" stroke-opacity=".45"/>`);
+        // Ground station: the downlink flows and the orbit drifts past
+        return svg(`<path class="a-flow-slow" d="M24 120C120 34 280 24 380 70" stroke="${L}" stroke-opacity=".4" stroke-dasharray="3 5"/><path d="M40 254H360" stroke="${A}" stroke-opacity=".3"/><path d="M190 254 206 236 222 254" stroke="${A}" stroke-opacity=".7"/><path d="M136 172C146 232 236 254 288 206" stroke="${K}"/><path d="M136 172 288 206" stroke="${K}" stroke-opacity=".4" stroke-dasharray="3 5"/><path d="M160 180 240 146M270 202 240 146" stroke="${A}" stroke-opacity=".55"/><circle cx="240" cy="146" r="5" stroke="${K}"/><path class="a-flow" d="M246 140 316 84" stroke="${L}" stroke-opacity=".8" stroke-dasharray="3 5"/><rect x="316" y="66" width="16" height="16" rx="1" stroke="${A}"/><path d="M300 74h16M332 74h16" stroke="${K}"/><path class="a-pulse" d="M280 116a40 40 0 0 1 20-28M268 108a56 56 0 0 1 26-38" stroke="${L}" stroke-opacity=".5"/>`);
       },
       triad(){
+        // Body axes holding attitude with a gentle sway
         const stars = [[60,60],[96,34],[330,44],[350,96],[300,30],[40,120],[362,140],[120,80]]
           .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 1.2 : 1.8}" fill="${A}" fill-opacity=".6" stroke="none"/>`).join('');
-        return svg(`${stars}<path d="M200 118 252 148 200 178 148 148Z" stroke="${K}"/><path d="M148 148 200 178 200 236 148 206Z M252 148 200 178 200 236 252 206Z" stroke="${A}" stroke-opacity=".7"/>${arrow(200, 178, 330, 250, L)}${arrow(200, 178, 70, 250, L)}${arrow(200, 178, 200, 46, L)}<path d="M176 74a26 9 0 1 0 48 0" stroke="${K}" stroke-opacity=".8"/>${arrow(220, 79, 225, 73, K, .8)}<text x="340" y="262" fill="${A}" font-size="16" font-style="italic" stroke="none">x</text><text x="54" y="262" fill="${A}" font-size="16" font-style="italic" stroke="none">y</text><text x="208" y="44" fill="${A}" font-size="16" font-style="italic" stroke="none">z</text>`);
-      },
-      rfi(){
-        const pts = [];
-        for (let x = 52; x <= 356; x += 3) {
-          const y = 222 + 5 * Math.sin(x * .9) + 3.5 * Math.sin(x * 2.3 + 1) + 2 * Math.sin(x * 5.1)
-                  - 128 * Math.exp(-(((x - 238) / 6) ** 2)) - 26 * Math.exp(-(((x - 252) / 9) ** 2));
-          pts.push(`${x},${y.toFixed(1)}`);
-        }
-        return svg(`<path d="M48 248H362M48 248V52" stroke="${A}" stroke-opacity=".4"/><path d="M48 168H362" stroke="${L}" stroke-opacity=".6" stroke-dasharray="4 6"/><polyline points="${pts.join(' ')}" stroke="${K}"/><circle cx="238" cy="94" r="9" stroke="${A}" stroke-opacity=".7"/><rect x="82" y="72" width="22" height="22" rx="2" stroke="${A}"/><rect x="88" y="78" width="10" height="10" stroke="${K}"/><path d="M114 70a16 16 0 0 1 0 26M122 62a28 28 0 0 1 0 42" stroke="${L}" stroke-opacity=".55"/>`);
-      },
-      thickfold(){
-        const P = [[60,214],[120,116],[180,214],[240,116],[300,214],[350,150]], t = 13;
-        let s = '';
-        for (let i = 0; i < P.length - 1; i++) {
-          const [x1, y1] = P[i], [x2, y2] = P[i + 1];
-          const len = Math.hypot(x2 - x1, y2 - y1), nx = -(y2 - y1) / len * t, ny = (x2 - x1) / len * t;
-          s += `<path d="M${x1} ${y1}L${x2} ${y2}L${(x2 + nx).toFixed(1)} ${(y2 + ny).toFixed(1)}L${(x1 + nx).toFixed(1)} ${(y1 + ny).toFixed(1)}Z" stroke="${K}" fill="${K}" fill-opacity=".07"/>`;
-        }
-        P.slice(1, -1).forEach(([x, y]) => { s += `<circle cx="${x}" cy="${y}" r="6" stroke="${A}"/>`; });
-        return svg(`<path d="M36 246H364" stroke="${A}" stroke-opacity=".3"/>${s}<path d="M50 96v20M44 96h12M44 116h12" stroke="${L}" stroke-opacity=".7"/><text x="62" y="112" fill="${L}" fill-opacity=".8" font-size="15" font-style="italic" stroke="none">t</text>`);
+        return svg(`${stars}<g class="a-sway"><path d="M200 118 252 148 200 178 148 148Z" stroke="${K}"/><path d="M148 148 200 178 200 236 148 206Z M252 148 200 178 200 236 252 206Z" stroke="${A}" stroke-opacity=".7"/>${arrow(200, 178, 330, 250, L)}${arrow(200, 178, 70, 250, L)}${arrow(200, 178, 200, 46, L)}<path class="a-flow" d="M176 74a26 9 0 1 0 48 0" stroke="${K}" stroke-opacity=".85" stroke-dasharray="5 3"/>${arrow(220, 79, 225, 73, K, .8)}<text x="340" y="262" fill="${A}" font-size="16" font-style="italic" stroke="none">x</text><text x="54" y="262" fill="${A}" font-size="16" font-style="italic" stroke="none">y</text><text x="208" y="44" fill="${A}" font-size="16" font-style="italic" stroke="none">z</text></g>`);
       },
       ff(){
-        return svg(`<ellipse cx="200" cy="152" rx="130" ry="65" stroke="${L}" stroke-opacity=".6" stroke-dasharray="4 6"/>${arrow(200, 152, 356, 152, A, .55)}${arrow(200, 152, 200, 40, A, .55)}<text x="290" y="176" fill="${A}" fill-opacity=".75" font-size="13" stroke="none">along-track</text><text x="210" y="50" fill="${A}" fill-opacity=".75" font-size="13" stroke="none">radial</text><path d="M200 152 298 110" stroke="${K}" stroke-opacity=".55" stroke-dasharray="3 5"/><rect x="191" y="143" width="18" height="18" rx="1" stroke="${K}"/><path d="M174 152h17M209 152h17" stroke="${K}"/><rect x="292" y="104" width="12" height="12" rx="1" stroke="${A}"/><path d="M281 110h11M304 110h11" stroke="${A}"/>`);
+        // Deputy on a 2:1 relative orbit around the chief (moved by script while on screen)
+        return svg(`<ellipse cx="200" cy="152" rx="130" ry="65" stroke="${L}" stroke-opacity=".6" stroke-dasharray="4 6"/>${arrow(200, 152, 356, 152, A, .55)}${arrow(200, 152, 200, 40, A, .55)}<text x="290" y="176" fill="${A}" fill-opacity=".75" font-size="13" stroke="none">along-track</text><text x="210" y="50" fill="${A}" fill-opacity=".75" font-size="13" stroke="none">radial</text><path class="a-vec" d="M200 152L298 110" stroke="${K}" stroke-opacity=".55" stroke-dasharray="3 5"/><rect x="191" y="143" width="18" height="18" rx="1" stroke="${K}"/><path d="M174 152h17M209 152h17" stroke="${K}"/><g class="a-deputy" transform="translate(298 110)"><rect x="-6" y="-6" width="12" height="12" rx="1" stroke="${A}"/><path d="M-17 0h11M6 0h11" stroke="${A}"/></g>`);
       },
     };
     document.querySelectorAll('[data-illus]').forEach(el => {
@@ -963,9 +990,10 @@
     });
 
     // Scroll geometry: an intro hold, then one "stop" per mission
-    const INTRO = 0.8, TAIL = 0.5, UNIT_VH = 50;
+    const INTRO = 0.5, TAIL = 0.3, UNIT_VH = 28; // UNIT_VH: scroll distance per mission (in % of screen height)
     const TOTAL = INTRO + (N - 1) + TAIL;
     orbit.style.height = `calc(100vh + ${TOTAL * UNIT_VH}vh)`;
+    Object.assign(orbit.dataset, { intro: INTRO, total: TOTAL });
     const range = () => orbit.offsetHeight - innerHeight;
     const scrollS = () => clamp(-orbit.getBoundingClientRect().top / range(), 0, 1) * TOTAL;
     const idxFromS = s => {
@@ -1208,7 +1236,7 @@
       });
       setFront(bi);
 
-      const ia = 1 - smooth(.08, .38, s), ca = smooth(.46, .76, s), slide = reduce ? 0 : 22;
+      const ia = 1 - smooth(.04, .22, s), ca = smooth(.26, .44, s), slide = reduce ? 0 : 22;
       intro.style.opacity = ia.toFixed(3);
       intro.style.transform = `translateY(${(-slide * (1 - ia)).toFixed(1)}px)`;
       intro.style.visibility = ia < .01 ? 'hidden' : '';
@@ -1425,6 +1453,34 @@
       new ResizeObserver(navCheck).observe(strip);
       new MutationObserver(navCheck).observe(photoLog, { attributes: true, subtree: true, attributeFilter: ['class'] });
     }
+
+    /* ---------- Experience media: drawings move and clips play only while on screen ---------- */
+    const ffFigs = [...document.querySelectorAll('.photo[data-illus="ff"]')];
+    let ffOn = false;
+    function ffLoop(now){
+      if (!ffOn) return;
+      const th = 2.43 - now / 1000 * (2 * Math.PI / 14);
+      const x = (200 + 130 * Math.cos(th)).toFixed(1), y = (152 + 65 * Math.sin(th)).toFixed(1);
+      ffFigs.forEach(f => {
+        if (!f.classList.contains('in-view')) return;
+        const d = f.querySelector('.a-deputy'), v = f.querySelector('.a-vec');
+        if (d) d.setAttribute('transform', `translate(${x} ${y})`);
+        if (v) v.setAttribute('d', `M200 152L${x} ${y}`);
+      });
+      requestAnimationFrame(ffLoop);
+    }
+    const mediaIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        e.target.classList.toggle('in-view', e.isIntersecting);
+        const v = e.target.querySelector('video');
+        if (v && !reduce) { if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }
+      });
+      const any = ffFigs.some(f => f.classList.contains('in-view'));
+      if (any && !ffOn && !reduce) { ffOn = true; requestAnimationFrame(ffLoop); }
+      if (!any) ffOn = false;
+    }, { threshold: .2 });
+    document.querySelectorAll('.photo').forEach(f => mediaIO.observe(f));
+    if (reduce) document.querySelectorAll('.photo video').forEach(v => { v.controls = true; });
 
     /* ---------- Photo viewer ---------- */
     const lb = $('#lightbox'), lbImg = $('#lbImg'), lbCap = $('#lbCap');
