@@ -83,18 +83,21 @@
     /* Live map behind the content: land dots with today's day/night line and a moving ground track */
     .map{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none;opacity:var(--map-opacity)}
     /* Fades the bottom of the hero into the page colour so there is no hard edge */
-    .hero-fade{position:absolute;left:0;right:0;bottom:0;height:12vh;background:linear-gradient(transparent, var(--page) 94%);pointer-events:none}
     .stars{position:absolute;inset:0;width:100%;height:100%;display:block}
 
+    /* The Earth is the divider: its night side is filled with the page colour, so the page
+       below simply continues it. Its edge always stays inside the hero, even on wide screens
+       (with a 300vw disc, the curve drops 8.6vw from the centre to the screen edges). */
     .earth{
-      position:absolute;left:50%;top:calc(100% - 12vh);
+      --earth-lift:5vh;    /* how far above the bottom of the screen the curve meets the edges */
+      position:absolute;left:50%;top:calc(100% - 8.6vw - var(--earth-lift));
       width:300vw;aspect-ratio:1;border-radius:50%;
       transform:translateX(-50%);
-      background:linear-gradient(180deg, #17264F 0, #0E1735 5vh, var(--space) 11vh);
+      background:radial-gradient(circle closest-side, var(--page) calc(100% - 4vh), #0D1533 calc(100% - 1.2vh), #17264F 100%);
       box-shadow:
-        0 -1.5px 0 rgba(116,196,255,.75),
-        0 -8px 26px rgba(116,196,255,.28),
-        0 -40px 120px rgba(116,196,255,.12);
+        0 0 0 1.5px rgba(116,196,255,.75),
+        0 0 26px 2px rgba(116,196,255,.26),
+        0 0 120px 12px rgba(116,196,255,.12);
     }
 
     .scene{position:absolute;inset:0;perspective:1100px;perspective-origin:var(--cx) var(--cy)}
@@ -305,8 +308,8 @@
     .hud-hint{margin:10px 0 0;font-size:13.5px;line-height:1.4}
 
     /* ---------- Content ---------- */
-    main{position:relative;padding-bottom:40px}
-    main::before{content:"";position:absolute;left:0;right:0;top:0;height:140px;background:linear-gradient(var(--page), transparent);pointer-events:none}
+    main{position:relative;z-index:0;padding-bottom:40px}
+    main::before{content:"";position:absolute;left:0;right:0;top:0;height:24vh;background:linear-gradient(var(--page), transparent);pointer-events:none;z-index:-1}
 
     /* About */
     .about{display:grid;grid-template-columns:minmax(0, 380px) minmax(0, 1fr);gap:clamp(40px, 6vw, 96px);align-items:start}
@@ -486,7 +489,7 @@
       .top-name{display:none}
       .top{justify-content:flex-end;padding-top:14px;padding-bottom:14px}
       .top-nav{gap:16px;font-size:14.5px}
-      .copy{left:20px;right:20px;width:auto;top:auto;bottom:22px;transform:none}
+      .copy{left:20px;right:20px;width:auto;top:auto;bottom:calc(8.6vw + 2vh + 14px);transform:none}   /* sits just above the Earth curve */
       .intro h1{font-size:clamp(36px, 10.5vw, 48px);margin-bottom:16px}
       .lede{font-size:16.5px;margin-bottom:14px}
       .cap-title{font-size:clamp(26px, 7.4vw, 34px);margin-bottom:10px}
@@ -496,8 +499,7 @@
       .hud-mode{font-size:13.5px;margin-bottom:2px;justify-content:flex-end}
       .hud .hud-extra,.hud-hint{display:none}
       .hud dl{grid-template-columns:auto auto}
-      .earth{top:calc(100% - 6vh)}
-      .hero-fade{height:6vh}
+      .earth{--earth-lift:2vh}
       .row,.row.has-photo{grid-template-columns:1fr;gap:6px;padding:28px 0}
       .row.has-photo .photo,.row.featured .photo{grid-column:auto;grid-row:1;margin:0 0 14px}
       .papers{grid-template-columns:1fr}
@@ -546,7 +548,6 @@
     <div class="orbit-pin">
       <canvas class="stars" id="stars" aria-hidden="true"></canvas>
       <div class="earth" aria-hidden="true"></div>
-      <div class="hero-fade" aria-hidden="true"></div>
 
       <div class="scene" id="scene">
         <div class="world" id="world">
