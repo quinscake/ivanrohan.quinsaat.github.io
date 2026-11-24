@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ivan Rohan Quinsaat</title>
+  <title>Ivan Rohan Quinsaat | Nanosatellite ADCS and formation-flying GNC</title>
   <meta name="description" content="Ivan Rohan Quinsaat builds and tests small-satellite hardware: attitude control, deployable antennas, and formation-flying GNC.">
   <meta property="og:title" content="Ivan Rohan Quinsaat">
   <meta property="og:description" content="Nanosatellite systems, formation-flying GNC, and spacecraft ADCS.">
@@ -401,7 +401,6 @@
       border-top:1px solid var(--line);
     }
     .row.has-photo{grid-template-columns:150px minmax(0, 1fr) minmax(0, 360px)}
-    .row.featured .photo{grid-column:2;aspect-ratio:16 / 9;margin-top:14px}
     .when{font-stretch:var(--cond);font-size:16px;line-height:1.45;color:var(--dim);font-variant-numeric:tabular-nums}
     .when p{margin:0}
     .when .now{color:var(--kapton);font-weight:600}
@@ -501,7 +500,7 @@
       .hud dl{grid-template-columns:auto auto}
       .earth{--earth-lift:2vh}
       .row,.row.has-photo{grid-template-columns:1fr;gap:6px;padding:28px 0}
-      .row.has-photo .photo,.row.featured .photo{grid-column:auto;grid-row:1;margin:0 0 14px}
+      .row.has-photo .photo{grid-column:auto;grid-row:1;margin:0 0 14px}
       .papers{grid-template-columns:1fr}
       .when{display:flex;gap:16px;flex-wrap:wrap}
       .contact h2,.contact-mail{font-size:17px}
@@ -738,10 +737,10 @@
           </figure>
         </li>
 
-        <!-- Featured entry: wide media. Add a short deployment clip at the <video> path below
+        <!-- Optional clip: add a short deployment video at the <video> path below
              (MP4, muted, a few seconds, under ~8 MB). Until it exists, the photo shows; until
              that exists, the drawing shows. -->
-        <li class="row featured" id="exp-origami3" data-place="tokyo">
+        <li class="row has-photo" id="exp-origami3" data-place="tokyo">
           <div class="when"><p>Apr–Aug 2026</p><p>Tokyo, Japan</p></div>
           <div>
             <h3>Deployable antenna payload for OrigamiSat-3</h3>
